@@ -9,7 +9,7 @@ public abstract class AbstractPrimPrimMapTest implements IMapTest {
     protected int[] m_keys;
 
     @Override
-    public void setup(final int[] keys, final float fillFactor) {
+    public void setup(final int[] keys, final float fillFactor, final int oneFailOutOf ) {
         m_keys = keys;
     }
 }

@@ -9,17 +9,17 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 public class TroveIntObjectMapTest extends AbstractPrimObjectMapTest {
     private TIntObjectMap<Integer> m_map;
     @Override
-    public void setup(int[] keys, float fillFactor) {
-        super.setup(keys, fillFactor);
+    public void setup(int[] keys, float fillFactor, int oneFailOutOf) {
+        super.setup(keys, fillFactor, oneFailOutOf);
         m_map = new TIntObjectHashMap<>( keys.length, fillFactor );
-        for ( final int key : keys ) m_map.put( key, key );
+        for ( final int key : keys ) m_map.put( key % oneFailOutOf == 0 ? key + 1 : key, key );
     }
 
     @Override
-    public int runRandomTest() {
+    public int randomGetTest() {
         int res = 0;
         for ( int i = 0; i < m_keys.length; ++i )
-            res = res ^ m_map.get( m_keys[ i ] );
+            if ( m_map.get( m_keys[ i ] ) != null ) res ^= 1;
         return res;
     }
 }

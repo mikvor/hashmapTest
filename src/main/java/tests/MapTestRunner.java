@@ -47,6 +47,9 @@ public class MapTestRunner {
     }
 
     private static final float FILL_FACTOR = 0.5f;
+    //share of unsuccessful get operations (approx)
+    //increase this value significantly (Integer.MAX_VALUE is a good candidate) to revert to the original "always successful get" tests
+    private static final int ONE_FAIL_OUT_OF = 2;
 
     private static final Class[] TESTS_PRIMITIVE = {
             FastUtilMapTest.class,
@@ -61,6 +64,7 @@ public class MapTestRunner {
     private static final Class[] TESTS_WRAPPER = {
             FastUtilObjMapTest.class,
             HftcMutableObjTest.class, //+
+            HftcNotNullKeyObjTest.class,
             HppcObjMapTest.class,
             GsObjMapTest.class,
             JdkMapTest.class,  //+
@@ -153,10 +157,10 @@ public class MapTestRunner {
             System.gc();
             final IMapTest obj = (IMapTest) klass.newInstance();
             System.out.println( "Prior to setup for " + klass.getName() );
-            obj.setup(KeyGenerator.getKeys(mapSize), FILL_FACTOR);
+            obj.setup(KeyGenerator.getKeys(mapSize), FILL_FACTOR, ONE_FAIL_OUT_OF);
             System.out.println("After setup for " + klass.getName());
             final long start = System.currentTimeMillis();
-            obj.runRandomTest();
+            obj.randomGetTest();
             final long time = System.currentTimeMillis() - start;
             System.out.println( klass.getName() + " : time = " + ( time / 1000.0 ) + " sec");
         }
@@ -218,13 +222,13 @@ public class MapTestRunner {
             e.printStackTrace();
         }
         //share the same keys for all tests with the same map size
-        m_impl.setup( KeyGenerator.getKeys( m_mapSize ), FILL_FACTOR );
+        m_impl.setup( KeyGenerator.getKeys( m_mapSize ), FILL_FACTOR, ONE_FAIL_OUT_OF );
     }
 
     @Benchmark
     public int testRandom()
     {
-        return m_impl.runRandomTest();
+        return m_impl.randomGetTest();
     }
 
 
