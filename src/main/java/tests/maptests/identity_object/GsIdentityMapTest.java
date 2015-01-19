@@ -2,39 +2,73 @@ package tests.maptests.identity_object;
 
 import com.gs.collections.api.block.HashingStrategy;
 import com.gs.collections.impl.map.strategy.mutable.UnifiedMapWithHashingStrategy;
-import tests.maptests.object.AbstractObjObjMapTest;
+import tests.maptests.IMapTest;
+import tests.maptests.ITestSet;
+import tests.maptests.object_prim.AbstractObjKeyGetTest;
 
 import java.util.Map;
 
 /**
  * GS IdentityMap version
  */
-public class GsIdentityMapTest  extends AbstractObjObjMapTest {
-    private Map<Integer, Integer> m_map;
-
+public class GsIdentityMapTest implements ITestSet
+{
     @Override
-    public void setup(final int[] keys, final float fillFactor, final int oneFailureOutOf ) {
-        super.setup( keys, fillFactor, oneFailureOutOf );
-        m_map = new UnifiedMapWithHashingStrategy<>(new HashingStrategy<Integer>() {
-            @Override
-            public int computeHashCode(Integer object) {
-                return System.identityHashCode( object );
-            }
-
-            @Override
-            public boolean equals(Integer object1, Integer object2) {
-                return object1 == object2;
-            }
-        }, keys.length, fillFactor );
-        for (Integer key : m_keys)
-            m_map.put(key % oneFailureOutOf == 0 ? key + 1 : key, key);
+    public IMapTest getTest() {
+        return new GsIdentityMapGetTest();
     }
 
     @Override
-    public int randomGetTest() {
-        int res = 0;
-        for ( int i = 0; i < m_keys.length; ++i )
-            if ( m_map.get( m_keys[ i ] ) != null ) res ^= 1;
-        return res;
+    public IMapTest putTest() {
+        return new GsObjIdentityPutTest();
     }
+
+    private static <T, V> Map<T, V> makeMap( final int size, final float fillFactor )
+    {
+        return new UnifiedMapWithHashingStrategy<>(new HashingStrategy<T>() {
+                        @Override
+                        public int computeHashCode(T object) {
+                            return System.identityHashCode( object );
+                        }
+
+                        @Override
+                        public boolean equals(T object1, T object2) {
+                            return object1 == object2;
+                        }
+                    }, size, fillFactor );
+    }
+
+    private static class GsIdentityMapGetTest extends AbstractObjKeyGetTest {
+        private Map<Integer, Integer> m_map;
+
+        @Override
+        public void setup(final int[] keys, final float fillFactor, final int oneFailureOutOf ) {
+            super.setup( keys, fillFactor, oneFailureOutOf );
+            m_map = makeMap( keys.length, fillFactor );
+            for (Integer key : m_keys)
+                m_map.put(key % oneFailureOutOf == 0 ? key + 1 : key, key);
+        }
+
+        @Override
+        public int test() {
+            int res = 0;
+            for ( int i = 0; i < m_keys.length; ++i )
+                if ( m_map.get( m_keys[ i ] ) != null ) res ^= 1;
+            return res;
+        }
+    }
+
+    private static class GsObjIdentityPutTest extends AbstractObjKeyPutIdentityTest {
+        @Override
+        public int test() {
+            final Map<Integer, Integer> m_map = makeMap(m_keys.length, m_fillFactor);
+            for ( int i = 0; i < m_keys.length; ++i )
+               m_map.put( m_keys[ i ],m_keys[ i ] );
+            for ( int i = 0; i < m_keys.length; ++i ) //same key set for identity maps
+               m_map.put( m_keys[ i ],m_keys[ i ] );
+            return m_map.size();
+        }
+    }
+
 }
+

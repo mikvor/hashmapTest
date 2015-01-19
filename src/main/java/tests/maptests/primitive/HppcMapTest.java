@@ -1,25 +1,53 @@
 package tests.maptests.primitive;
 
 import com.carrotsearch.hppc.IntIntOpenHashMap;
+import tests.maptests.IMapTest;
+import tests.maptests.ITestSet;
 
 /**
  * HPPC IntIntOpenHashMap test
  */
-public class HppcMapTest extends AbstractPrimPrimMapTest {
-    private IntIntOpenHashMap m_map;
-
+public class HppcMapTest implements ITestSet
+{
     @Override
-    public void setup(final int[] keys, final float fillFactor, int oneFailOutOf ) {
-        super.setup( keys, fillFactor, oneFailOutOf );
-        m_map = new IntIntOpenHashMap( keys.length, fillFactor );
-        for (int key : keys) m_map.put( key + (key % oneFailOutOf == 0 ? 1 : 0), key );
+    public IMapTest getTest() {
+        return new HppcGetTest();
     }
 
     @Override
-    public int randomGetTest() {
-        int res = 0;
-        for ( int i = 0; i < m_keys.length; ++i )
-            res = res ^ m_map.get( m_keys[ i ] );
-        return res;
+    public IMapTest putTest() {
+        return new HppcPutTest();
+    }
+
+    private static class HppcGetTest extends AbstractPrimPrimGetTest {
+        private IntIntOpenHashMap m_map;
+
+        @Override
+        public void setup(final int[] keys, final float fillFactor, int oneFailOutOf ) {
+            super.setup( keys, fillFactor, oneFailOutOf );
+            m_map = new IntIntOpenHashMap( keys.length, fillFactor );
+            for (int key : keys) m_map.put( key + (key % oneFailOutOf == 0 ? 1 : 0), key );
+        }
+
+        @Override
+        public int test() {
+            int res = 0;
+            for ( int i = 0; i < m_keys.length; ++i )
+                res = res ^ m_map.get( m_keys[ i ] );
+            return res;
+        }
+    }
+
+    private static class HppcPutTest extends AbstractPrimPrimPutTest {
+        @Override
+        public int test() {
+            final IntIntOpenHashMap m_map = new IntIntOpenHashMap( m_keys.length, m_fillFactor );
+            for ( int i = 0; i < m_keys.length; ++i )
+               m_map.put( m_keys[ i ],m_keys[ i ] );
+            for ( int i = 0; i < m_keys.length; ++i )
+               m_map.put( m_keys[ i ],m_keys[ i ] );
+            return m_map.size();
+        }
     }
 }
+

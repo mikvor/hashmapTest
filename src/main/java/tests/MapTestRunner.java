@@ -7,6 +7,7 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import tests.maptests.IMapTest;
+import tests.maptests.ITestSet;
 import tests.maptests.identity_object.*;
 import tests.maptests.object.*;
 import tests.maptests.object_prim.*;
@@ -20,10 +21,6 @@ import java.util.concurrent.TimeUnit;
 Master plan:
 1) add following test cases:
 1.1) 2 added, 1 (previously inserted) removed - until reached the map size
-1.2) same get test, but half of keys are not in the map
-1.3) Koloboke tests for != keys, FastUtil Ref2Object map, Trove custom hashMap, JDK IdentityHashMap
-
-2) Check JDK HashMap fill factor
  */
 
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -54,10 +51,7 @@ public class MapTestRunner {
     private static final Class[] TESTS_PRIMITIVE = {
             FastUtilMapTest.class,
             GsMutableMapTest.class,
-            GsImmutableMapTest.class,
             HftcMutableMapTest.class, //+
-            HftcImmutableMapTest.class, //+
-            HftcUpdateableMapTest.class, //+
             HppcMapTest.class,
             TroveMapTest.class, //+
     };
@@ -95,7 +89,21 @@ public class MapTestRunner {
             TroveIdentityMapTest.class,
     };
 
-    public static void main(String[] args) throws RunnerException, InstantiationException, IllegalAccessException {
+    public static void main(String[] args) throws RunnerException, InstantiationException, IllegalAccessException
+    {
+        String get = runTestSet("get");
+        String put = runTestSet("put");
+
+        System.out.println( "Get results:" );
+        System.out.println( get );
+        System.out.println();
+
+        System.out.println( "Put results:" );
+        System.out.println( put );
+    }
+
+    private static String runTestSet(final String testSetName) throws RunnerException, InstantiationException, IllegalAccessException
+    {
         final List<Class> tests = new ArrayList<>();
         tests.addAll( Arrays.asList( TESTS_PRIMITIVE ) );
         tests.addAll( Arrays.asList( TESTS_WRAPPER ) );
@@ -109,7 +117,7 @@ public class MapTestRunner {
         if ( BILLION_TEST )
         { //JMH does not feel well on these sizes
             testBillion( tests );
-            return;
+            return "";
         }
 
         //pick map size first - we need to generate a set of keys to be used in all tests
@@ -121,12 +129,13 @@ public class MapTestRunner {
                         .forks(1)
                         .mode(Mode.SingleShotTime)
                         .warmupBatchSize(TOTAL_SIZE / mapSize)
-                        .warmupIterations(5)
+                        .warmupIterations(10)
                         .measurementBatchSize(TOTAL_SIZE / mapSize)
-                        .measurementIterations(5)
+                        .measurementIterations(10)
                         .jvmArgsAppend("-Xmx30G")
                         .param("m_mapSize", Integer.toString(mapSize))
                         .param("m_className", testClass.getCanonicalName())
+                        .param("m_testType", testSetName)
                         //.verbosity(VerboseMode.SILENT)
                         .build();
 
@@ -147,7 +156,10 @@ public class MapTestRunner {
                 }
             }
         }
-        System.out.println( formatResults( results, MAP_SIZES, tests ) );
+        final String res = formatResults(results, MAP_SIZES, tests);
+        System.out.println( "Results for test type = " + testSetName + ":\n" + res);
+
+        return res;
     }
 
     private static void testBillion( final List<Class> tests ) throws IllegalAccessException, InstantiationException {
@@ -160,7 +172,7 @@ public class MapTestRunner {
             obj.setup(KeyGenerator.getKeys(mapSize), FILL_FACTOR, ONE_FAIL_OUT_OF);
             System.out.println("After setup for " + klass.getName());
             final long start = System.currentTimeMillis();
-            obj.randomGetTest();
+            obj.test();
             final long time = System.currentTimeMillis() - start;
             System.out.println( klass.getName() + " : time = " + ( time / 1000.0 ) + " sec");
         }
@@ -211,16 +223,30 @@ public class MapTestRunner {
 
     @Param("dummy")
     public String m_className;
+
+    @Param( {"get", "put"} )
+    public String m_testType;
+
     private IMapTest m_impl;
 
     @Setup
     public void setup()
     {
         try {
-            m_impl = (IMapTest) Class.forName( m_className ).newInstance();
+            final ITestSet testSet = (ITestSet) Class.forName( m_className ).newInstance();
+            switch ( m_testType )
+            {
+                case "get":
+                    m_impl = testSet.getTest();
+                    break;
+                case "put":
+                    m_impl = testSet.putTest();
+                    break;
+            }
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+
         //share the same keys for all tests with the same map size
         m_impl.setup( KeyGenerator.getKeys( m_mapSize ), FILL_FACTOR, ONE_FAIL_OUT_OF );
     }
@@ -228,7 +254,7 @@ public class MapTestRunner {
     @Benchmark
     public int testRandom()
     {
-        return m_impl.randomGetTest();
+        return m_impl.test();
     }
 
 

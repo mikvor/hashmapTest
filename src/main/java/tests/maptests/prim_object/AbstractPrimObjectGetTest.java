@@ -3,9 +3,9 @@ package tests.maptests.prim_object;
 import tests.maptests.IMapTest;
 
 /**
- * Base class for primitive to object maps
+ * Base class for primitive to object map get tests
  */
-public abstract class AbstractPrimObjectMapTest implements IMapTest {
+public abstract class AbstractPrimObjectGetTest implements IMapTest {
     protected int[] m_keys;
 
     @Override

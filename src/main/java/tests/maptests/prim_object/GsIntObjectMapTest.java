@@ -1,25 +1,53 @@
 package tests.maptests.prim_object;
 
 import com.gs.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import tests.maptests.IMapTest;
+import tests.maptests.ITestSet;
 
 /**
  * GS IntObjectHashMap
  */
-public class GsIntObjectMapTest extends AbstractPrimObjectMapTest {
-    private IntObjectHashMap<Integer> m_map;
-
+public class GsIntObjectMapTest implements ITestSet
+{
     @Override
-    public void setup(int[] keys, float fillFactor, int oneFailOutOf) {
-        super.setup(keys, fillFactor, oneFailOutOf );
-        m_map = new IntObjectHashMap<>( keys.length );
-        for ( int key : keys ) m_map.put( key % oneFailOutOf == 0 ? key + 1 : key, key );
+    public IMapTest getTest() {
+        return new GsIntObjectGetTest();
     }
 
     @Override
-    public int randomGetTest() {
-        int res = 0;
-        for ( int i = 0; i < m_keys.length; ++i )
-            if ( m_map.get( m_keys[ i ] ) != null ) res ^= 1;
-        return res;
+    public IMapTest putTest() {
+        return new GsIntObjectPutTest();
+    }
+
+    private static class GsIntObjectGetTest extends AbstractPrimObjectGetTest {
+        private IntObjectHashMap<Integer> m_map;
+
+        @Override
+        public void setup(int[] keys, float fillFactor, int oneFailOutOf) {
+            super.setup(keys, fillFactor, oneFailOutOf );
+            m_map = new IntObjectHashMap<>( keys.length );
+            for ( int key : keys ) m_map.put( key % oneFailOutOf == 0 ? key + 1 : key, key );
+        }
+
+        @Override
+        public int test() {
+            int res = 0;
+            for ( int i = 0; i < m_keys.length; ++i )
+                if ( m_map.get( m_keys[ i ] ) != null ) res ^= 1;
+            return res;
+        }
+    }
+
+    private static class GsIntObjectPutTest extends AbstractPrimObjectPutTest {
+        @Override
+        public int test() {
+            final IntObjectHashMap<Integer> m_map = new IntObjectHashMap<>( m_keys.length );
+            for ( int i = 0; i < m_keys.length; ++i )
+                m_map.put( m_keys[ i ], null );
+            for ( int i = 0; i < m_keys.length; ++i )
+                m_map.put( m_keys[ i ], null );
+            return m_map.size();
+        }
     }
 }
+
