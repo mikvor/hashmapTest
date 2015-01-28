@@ -21,6 +21,11 @@ public class HftcObjectIntMapTest implements ITestSet
         return new HftcObjectIntPutTest();
     }
 
+    @Override
+    public IMapTest removeTest() {
+        return new HftcObjectIntRemoveTest();
+    }
+
     private static <T> HashObjIntMap<T> makeMap( final int size, final float fillFactor )
     {
         return HashObjIntMaps.getDefaultFactory().withHashConfig(HashConfig.fromLoads( fillFactor/2, fillFactor, fillFactor )).
@@ -54,6 +59,23 @@ public class HftcObjectIntMapTest implements ITestSet
                 m_map.put( m_keys[ i ], i );
             for ( int i = 0; i < m_keys2.length; ++i )
                 m_map.put( m_keys2[ i ], i );
+            return m_map.size();
+        }
+    }
+
+    private static class HftcObjectIntRemoveTest extends AbstractObjKeyPutTest {
+        @Override
+        public int test() {
+            final HashObjIntMap<Integer> m_map = makeMap( m_keys.length, m_fillFactor );
+            int add = 0, remove = 0;
+            while ( add < m_keys.length )
+            {
+                m_map.put( m_keys[ add ], add );
+                ++add;
+                m_map.put( m_keys[ add ], add );
+                ++add;
+                m_map.remove( m_keys[ remove++ ] );
+            }
             return m_map.size();
         }
     }

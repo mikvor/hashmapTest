@@ -20,6 +20,11 @@ public class TroveObjectIntMapTest implements ITestSet
         return new TroveObjectIntPutTest();
     }
 
+    @Override
+    public IMapTest removeTest() {
+        return new TroveObjectIntRemoveTest();
+    }
+
     private static class TroveObjectIntGetTest extends AbstractObjKeyGetTest {
         private TObjectIntMap<Integer> m_map;
         @Override
@@ -46,6 +51,23 @@ public class TroveObjectIntMapTest implements ITestSet
                m_map.put( m_keys[ i ], i );
             for ( int i = 0; i < m_keys2.length; ++i )
                m_map.put( m_keys2[ i ], i );
+            return m_map.size();
+        }
+    }
+
+    private static class TroveObjectIntRemoveTest extends AbstractObjKeyPutTest {
+        @Override
+        public int test() {
+            final TObjectIntMap<Integer> m_map = new TObjectIntHashMap<>( m_keys.length, m_fillFactor );
+            int add = 0, remove = 0;
+            while ( add < m_keys.length )
+            {
+                m_map.put( m_keys[ add ], add );
+                ++add;
+                m_map.put( m_keys[ add ], add );
+                ++add;
+                m_map.remove( m_keys[ remove++ ] );
+            }
             return m_map.size();
         }
     }

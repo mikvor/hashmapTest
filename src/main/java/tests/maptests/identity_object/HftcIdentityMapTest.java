@@ -24,6 +24,11 @@ public class HftcIdentityMapTest implements ITestSet
         return new HftcObjIdentityPutTest();
     }
 
+    @Override
+    public IMapTest removeTest() {
+        return new HftcObjIdentityRemoveTest();
+    }
+
     private static <T, V> Map<T, V> makeMap( final int size, final float fillFactor )
     {
         return HashObjObjMaps.getDefaultFactory().withKeyEquivalence( Equivalence.identity() ).
@@ -58,6 +63,23 @@ public class HftcIdentityMapTest implements ITestSet
                 m_map.put(m_keys[i],m_keys[i]);
             for (int i = 0; i < m_keys.length; ++i) //same set for identity tests
                 m_map.put(m_keys[i],m_keys[i]);
+            return m_map.size();
+        }
+    }
+
+    private class HftcObjIdentityRemoveTest extends AbstractObjKeyPutIdentityTest {
+        @Override
+        public int test() {
+            final Map<Integer, Integer> m_map = makeMap(m_keys.length, m_fillFactor);
+            int add = 0, remove = 0;
+            while ( add < m_keys.length )
+            {
+                m_map.put( m_keys[ add ], m_keys[ add ] );
+                ++add;
+                m_map.put( m_keys[ add ], m_keys[ add ] );
+                ++add;
+                m_map.remove( m_keys[ remove++ ] );
+            }
             return m_map.size();
         }
     }

@@ -23,6 +23,11 @@ public class TroveIdentityMapTest implements ITestSet
         return new TroveIdentityObjMapPutTest();
     }
 
+    @Override
+    public IMapTest removeTest() {
+        return new TroveIdentityObjMapRemoveTest();
+    }
+
     private static class TroveIdentityMapGetTest extends AbstractObjKeyGetTest {
         private Map<Integer, Integer> m_map;
 
@@ -51,6 +56,23 @@ public class TroveIdentityMapTest implements ITestSet
                m_map.put( m_keys[ i ], m_keys[ i ] );
             for ( int i = 0; i < m_keys.length; ++i ) //same key set is used for identity tests
                m_map.put( m_keys[ i ], m_keys[ i ] );
+            return m_map.size();
+        }
+    }
+
+    private static class TroveIdentityObjMapRemoveTest extends AbstractObjKeyPutIdentityTest {
+        @Override
+        public int test() {
+            final Map<Integer, Integer> m_map = new TCustomHashMap<>( IdentityHashingStrategy.INSTANCE, m_keys.length, m_fillFactor );
+            int add = 0, remove = 0;
+            while ( add < m_keys.length )
+            {
+                m_map.put( m_keys[ add ], m_keys[ add ] );
+                ++add;
+                m_map.put( m_keys[ add ], m_keys[ add ] );
+                ++add;
+                m_map.remove( m_keys[ remove++ ] );
+            }
             return m_map.size();
         }
     }

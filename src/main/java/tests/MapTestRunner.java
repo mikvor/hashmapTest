@@ -91,15 +91,17 @@ public class MapTestRunner {
 
     public static void main(String[] args) throws RunnerException, InstantiationException, IllegalAccessException
     {
-        String get = runTestSet("get");
-        String put = runTestSet("put");
+        final LinkedHashMap<String, String> res = new LinkedHashMap<>(3);
+        res.put( "get", runTestSet( "get" ) );
+        res.put( "put", runTestSet( "put" ) );
+        res.put( "remove", runTestSet( "remove" ) );
 
-        System.out.println( "Get results:" );
-        System.out.println( get );
-        System.out.println();
-
-        System.out.println( "Put results:" );
-        System.out.println( put );
+        for ( final Map.Entry<String, String> entry : res.entrySet() )
+        {
+            System.out.println( "Results for '" + entry.getKey() + "':" );
+            System.out.println( entry.getValue() );
+            System.out.println();
+        }
     }
 
     private static String runTestSet(final String testSetName) throws RunnerException, InstantiationException, IllegalAccessException
@@ -170,7 +172,7 @@ public class MapTestRunner {
             final IMapTest obj = (IMapTest) klass.newInstance();
             System.out.println( "Prior to setup for " + klass.getName() );
             obj.setup(KeyGenerator.getKeys(mapSize), FILL_FACTOR, ONE_FAIL_OUT_OF);
-            System.out.println("After setup for " + klass.getName());
+            System.out.println( "After setup for " + klass.getName() );
             final long start = System.currentTimeMillis();
             obj.test();
             final long time = System.currentTimeMillis() - start;
@@ -224,7 +226,7 @@ public class MapTestRunner {
     @Param("dummy")
     public String m_className;
 
-    @Param( {"get", "put"} )
+    @Param( {"get", "put", "remove"} )
     public String m_testType;
 
     private IMapTest m_impl;
@@ -241,6 +243,9 @@ public class MapTestRunner {
                     break;
                 case "put":
                     m_impl = testSet.putTest();
+                    break;
+                case "remove":
+                    m_impl = testSet.removeTest();
                     break;
             }
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {

@@ -21,6 +21,11 @@ public class HftcMutableMapTest implements ITestSet
         return new HftcMutablePutTest();
     }
 
+    @Override
+    public IMapTest removeTest() {
+        return new HftcMutableRemoveTest();
+    }
+
     private static HashIntIntMap makeMap( final int size, final float fillFactor )
     {
         return HashIntIntMaps.getDefaultFactory().
@@ -54,6 +59,23 @@ public class HftcMutableMapTest implements ITestSet
                 m_map.put( m_keys[ i ],m_keys[ i ] );
             for ( int i = 0; i < m_keys.length; ++i )
                 m_map.put( m_keys[ i ],m_keys[ i ] );
+            return m_map.size();
+        }
+    }
+
+    private static class HftcMutableRemoveTest extends AbstractPrimPrimPutTest {
+        @Override
+        public int test() {
+            final HashIntIntMap m_map = makeMap(m_keys.length, m_fillFactor);
+            int add = 0, remove = 0;
+            while ( add < m_keys.length )
+            {
+                m_map.put( m_keys[ add ], m_keys[ add ] );
+                ++add;
+                m_map.put( m_keys[ add ], m_keys[ add ] );
+                ++add;
+                m_map.remove( m_keys[ remove++ ] );
+            }
             return m_map.size();
         }
     }

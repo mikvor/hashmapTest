@@ -19,6 +19,11 @@ public class HppcObjectIntMapTest implements ITestSet
         return new HppcObjectIntPutTest();
     }
 
+    @Override
+    public IMapTest removeTest() {
+        return new HppcObjectIntRemoveTest();
+    }
+
     private static class HppcObjectIntGetTest extends AbstractObjKeyGetTest {
         private ObjectIntOpenHashMap<Integer> m_map;
 
@@ -46,6 +51,23 @@ public class HppcObjectIntMapTest implements ITestSet
                 m_map.put( m_keys[ i ], i );
             for ( int i = 0; i < m_keys2.length; ++i )
                 m_map.put( m_keys2[ i ], i );
+            return m_map.size();
+        }
+    }
+
+    private static class HppcObjectIntRemoveTest extends AbstractObjKeyPutTest {
+        @Override
+        public int test() {
+            final ObjectIntOpenHashMap<Integer> m_map = new ObjectIntOpenHashMap<>( m_keys.length );
+            int add = 0, remove = 0;
+            while ( add < m_keys.length )
+            {
+                m_map.put( m_keys[ add ], add );
+                ++add;
+                m_map.put( m_keys[ add ], add );
+                ++add;
+                m_map.remove( m_keys[ remove++ ] );
+            }
             return m_map.size();
         }
     }

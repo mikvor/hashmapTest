@@ -20,6 +20,11 @@ public class GsMutableMapTest implements ITestSet
         return new GsMutablePutTest();
     }
 
+    @Override
+    public IMapTest removeTest() {
+        return new GsMutableRemoveTest();
+    }
+
     private static class GsMutableGetTest extends AbstractPrimPrimGetTest {
         IntIntMap m_map;
 
@@ -48,6 +53,23 @@ public class GsMutableMapTest implements ITestSet
                 m_map.put( m_keys[ i ], m_keys[ i ] );
             for ( int i = 0; i < m_keys.length; ++i )
                 m_map.put( m_keys[ i ], m_keys[ i ] );
+            return m_map.size();
+        }
+    }
+
+    private static class GsMutableRemoveTest extends AbstractPrimPrimPutTest {
+        @Override
+        public int test() {
+            final IntIntHashMap m_map = new IntIntHashMap(m_keys.length);
+            int add = 0, remove = 0;
+            while ( add < m_keys.length )
+            {
+                m_map.put( m_keys[ add ], m_keys[ add ] );
+                ++add;
+                m_map.put( m_keys[ add ], m_keys[ add ] );
+                ++add;
+                m_map.remove( m_keys[ remove++ ] );
+            }
             return m_map.size();
         }
     }

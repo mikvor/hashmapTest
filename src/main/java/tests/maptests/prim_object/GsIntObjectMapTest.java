@@ -19,6 +19,11 @@ public class GsIntObjectMapTest implements ITestSet
         return new GsIntObjectPutTest();
     }
 
+    @Override
+    public IMapTest removeTest() {
+        return new GsIntObjectRemoveTest();
+    }
+
     private static class GsIntObjectGetTest extends AbstractPrimObjectGetTest {
         private IntObjectHashMap<Integer> m_map;
 
@@ -46,6 +51,24 @@ public class GsIntObjectMapTest implements ITestSet
                 m_map.put( m_keys[ i ], null );
             for ( int i = 0; i < m_keys.length; ++i )
                 m_map.put( m_keys[ i ], null );
+            return m_map.size();
+        }
+    }
+
+    private static class GsIntObjectRemoveTest extends AbstractPrimObjectPutTest {
+        @Override
+        public int test() {
+            final IntObjectHashMap<Integer> m_map = new IntObjectHashMap<>( m_keys.length );
+            final Integer value = 1;
+            int add = 0, remove = 0;
+            while ( add < m_keys.length )
+            {
+                m_map.put( m_keys[ add ], value );
+                ++add;
+                m_map.put( m_keys[ add ], value );
+                ++add;
+                m_map.remove( m_keys[ remove++ ] );
+            }
             return m_map.size();
         }
     }

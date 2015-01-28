@@ -9,4 +9,5 @@ package tests.maptests;
 public interface ITestSet {
     public IMapTest getTest();
     public IMapTest putTest();
+    public IMapTest removeTest();
 }

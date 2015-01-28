@@ -23,6 +23,11 @@ public class JdkMapTest implements ITestSet
         return new JdkMapPutTest();
     }
 
+    @Override
+    public IMapTest removeTest() {
+        return new JdkMapRemoveTest();
+    }
+
     protected <T, V> Map<T, V> makeMap( final int size, final float fillFactor )
     {
         return new HashMap<>( size, fillFactor );
@@ -57,6 +62,23 @@ public class JdkMapTest implements ITestSet
                 map.put( m_keys[ i ], m_keys[ i ] );
             for ( int i = 0; i < m_keys2.length; ++i )
                 map.put( m_keys2[ i ], m_keys2[ i ] );
+            return map.size();
+        }
+    }
+
+    private class JdkMapRemoveTest extends AbstractObjKeyPutTest {
+        @Override
+        public int test() {
+            final Map<Integer, Integer> map = makeMap( m_keys.length, m_fillFactor );
+            int add = 0, remove = 0;
+            while ( add < m_keys.length )
+            {
+                map.put( m_keys[ add ], m_keys[ add ] );
+                ++add;
+                map.put( m_keys[ add ], m_keys[ add ] );
+                ++add;
+                map.remove( m_keys2[ remove++ ] );
+            }
             return map.size();
         }
     }

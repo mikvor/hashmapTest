@@ -20,6 +20,11 @@ public class FastUtilMapTest implements ITestSet
         return new FastUtilPutTest();
     }
 
+    @Override
+    public IMapTest removeTest() {
+        return new FastUtilRemoveTest();
+    }
+
     private static class FastUtilGetTest extends AbstractPrimPrimGetTest {
         private Int2IntOpenHashMap m_map;
 
@@ -47,6 +52,23 @@ public class FastUtilMapTest implements ITestSet
                 m_map.put( m_keys[ i ],m_keys[ i ] );
             for ( int i = 0; i < m_keys.length; ++i )
                 m_map.put( m_keys[ i ],m_keys[ i ] );
+            return m_map.size();
+        }
+    }
+
+    private static class FastUtilRemoveTest extends AbstractPrimPrimPutTest {
+        @Override
+        public int test() {
+            final Int2IntOpenHashMap m_map = new Int2IntOpenHashMap( m_keys.length, m_fillFactor );
+            int add = 0, remove = 0;
+            while ( add < m_keys.length )
+            {
+                m_map.put( m_keys[ add ], m_keys[ add ] );
+                ++add;
+                m_map.put( m_keys[ add ], m_keys[ add ] );
+                ++add;
+                m_map.remove( m_keys[ remove++ ] );
+            }
             return m_map.size();
         }
     }

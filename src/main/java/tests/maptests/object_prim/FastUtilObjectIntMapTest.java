@@ -19,6 +19,11 @@ public class FastUtilObjectIntMapTest implements ITestSet
         return new FastUtilObjectIntPutTest();
     }
 
+    @Override
+    public IMapTest removeTest() {
+        return new FastUtilObjectIntRemoveTest();
+    }
+
     private static class FastUtilObjectIntGetTest extends AbstractObjKeyGetTest {
         private Object2IntOpenHashMap<Integer> m_map;
 
@@ -46,6 +51,23 @@ public class FastUtilObjectIntMapTest implements ITestSet
                 m_map.put( m_keys[ i ], i );
             for ( int i = 0; i < m_keys2.length; ++i )
                 m_map.put( m_keys2[ i ], i );
+            return m_map.size();
+        }
+    }
+
+    private static class FastUtilObjectIntRemoveTest extends AbstractObjKeyPutTest {
+        @Override
+        public int test() {
+            final Object2IntOpenHashMap<Integer> m_map = new Object2IntOpenHashMap<>( m_keys.length, m_fillFactor );
+            int add = 0, remove = 0;
+            while ( add < m_keys.length )
+            {
+                m_map.put( m_keys[ add ], add );
+                ++add;
+                m_map.put( m_keys[ add ], add );
+                ++add;
+                m_map.remove( m_keys[ remove++ ] );
+            }
             return m_map.size();
         }
     }

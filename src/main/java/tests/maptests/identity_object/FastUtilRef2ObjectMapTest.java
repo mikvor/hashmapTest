@@ -22,6 +22,11 @@ public class FastUtilRef2ObjectMapTest implements ITestSet
         return new FastUtilRef2ObjPutTest();
     }
 
+    @Override
+    public IMapTest removeTest() {
+        return new FastUtilRef2ObjRemoveTest();
+    }
+
     private static class FastUtilRef2ObjectGetTest extends AbstractObjKeyGetTest {
         private Map<Integer, Integer> m_map;
 
@@ -42,7 +47,6 @@ public class FastUtilRef2ObjectMapTest implements ITestSet
         }
     }
 
-
     private static class FastUtilRef2ObjPutTest extends AbstractObjKeyPutIdentityTest {
         @Override
         public int test() {
@@ -51,6 +55,23 @@ public class FastUtilRef2ObjectMapTest implements ITestSet
                 m_map.put( m_keys[ i ], m_keys[ i ] );
             for ( int i = 0; i < m_keys.length; ++i ) //same key set is used for identity maps
                 m_map.put( m_keys[ i ], m_keys[ i ] );
+            return m_map.size();
+        }
+    }
+
+    private static class FastUtilRef2ObjRemoveTest extends AbstractObjKeyPutIdentityTest {
+        @Override
+        public int test() {
+            final Map<Integer, Integer> m_map = new Reference2ObjectOpenHashMap<>( m_keys.length, m_fillFactor );
+            int add = 0, remove = 0;
+            while ( add < m_keys.length )
+            {
+                m_map.put( m_keys[ add ], m_keys[ add ] );
+                ++add;
+                m_map.put( m_keys[ add ], m_keys[ add ] );
+                ++add;
+                m_map.remove( m_keys[ remove++ ] );
+            }
             return m_map.size();
         }
     }
