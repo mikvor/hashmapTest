@@ -58,7 +58,7 @@ public class FastUtilIntObjectMapTest implements ITestSet
     private static class FastUtilIntObjectRemoveTest extends AbstractPrimObjectPutTest {
         @Override
         public int test() {
-            final Int2ObjectOpenHashMap<Integer> m_map = new Int2ObjectOpenHashMap<>( m_keys.length, m_fillFactor );
+            final Int2ObjectOpenHashMap<Integer> m_map = new Int2ObjectOpenHashMap<>( m_keys.length / 2 + 1, m_fillFactor );
             final Integer value = 1;
             int add = 0, remove = 0;
             while ( add < m_keys.length )

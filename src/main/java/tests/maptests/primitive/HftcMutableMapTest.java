@@ -66,7 +66,7 @@ public class HftcMutableMapTest implements ITestSet
     private static class HftcMutableRemoveTest extends AbstractPrimPrimPutTest {
         @Override
         public int test() {
-            final HashIntIntMap m_map = makeMap(m_keys.length, m_fillFactor);
+            final HashIntIntMap m_map = makeMap(m_keys.length / 2 + 1, m_fillFactor);
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {

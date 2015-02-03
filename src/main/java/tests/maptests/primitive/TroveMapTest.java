@@ -59,7 +59,7 @@ public class TroveMapTest implements ITestSet
     private static class TroveRemoveTest extends AbstractPrimPrimPutTest {
         @Override
         public int test() {
-            final TIntIntMap m_map = new TIntIntHashMap( m_keys.length, m_fillFactor );
+            final TIntIntMap m_map = new TIntIntHashMap( m_keys.length / 2 + 1, m_fillFactor );
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {

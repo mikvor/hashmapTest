@@ -62,7 +62,7 @@ public class JDKIdentityMapTest implements ITestSet
     private static class JdkIdentityMapRemoveTest extends AbstractObjKeyPutIdentityTest {
         @Override
         public int test() {
-            final Map<Integer, Integer> m_map = new IdentityHashMap<>( m_keys.length );
+            final Map<Integer, Integer> m_map = new IdentityHashMap<>( m_keys.length / 2 + 1 );
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {

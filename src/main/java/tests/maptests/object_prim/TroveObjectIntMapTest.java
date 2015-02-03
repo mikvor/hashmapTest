@@ -58,7 +58,7 @@ public class TroveObjectIntMapTest implements ITestSet
     private static class TroveObjectIntRemoveTest extends AbstractObjKeyPutTest {
         @Override
         public int test() {
-            final TObjectIntMap<Integer> m_map = new TObjectIntHashMap<>( m_keys.length, m_fillFactor );
+            final TObjectIntMap<Integer> m_map = new TObjectIntHashMap<>( m_keys.length / 2 + 1, m_fillFactor );
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {

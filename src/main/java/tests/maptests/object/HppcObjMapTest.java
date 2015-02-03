@@ -62,7 +62,7 @@ public class HppcObjMapTest implements ITestSet
     private static class HppcObjMapRemoveTest extends AbstractObjKeyPutTest {
         @Override
         public int test() {
-            final ObjectObjectMap<Integer, Integer> m_map = new ObjectObjectOpenHashMap<>( m_keys.length, m_fillFactor );
+            final ObjectObjectMap<Integer, Integer> m_map = new ObjectObjectOpenHashMap<>( m_keys.length / 2 + 1, m_fillFactor );
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {

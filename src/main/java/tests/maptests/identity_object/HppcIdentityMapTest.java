@@ -61,7 +61,7 @@ public class HppcIdentityMapTest implements ITestSet
     private static class HppcObjIdentityMapRemoveTest extends AbstractObjKeyPutIdentityTest {
         @Override
         public int test() {
-            final ObjectObjectMap<Integer, Integer> m_map = new ObjectObjectOpenIdentityHashMap<>( m_keys.length, m_fillFactor );
+            final ObjectObjectMap<Integer, Integer> m_map = new ObjectObjectOpenIdentityHashMap<>( m_keys.length / 2 + 1, m_fillFactor );
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {

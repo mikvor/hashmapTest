@@ -62,7 +62,7 @@ public class GsObjMapTest implements ITestSet
     private static class GsObjRemoveTest extends AbstractObjKeyPutTest {
         @Override
         public int test() {
-            final Map<Integer, Integer> m_map = new UnifiedMap<>( m_keys.length, m_fillFactor );
+            final Map<Integer, Integer> m_map = new UnifiedMap<>( m_keys.length / 2 + 1, m_fillFactor );
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {

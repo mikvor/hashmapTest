@@ -58,7 +58,7 @@ public class HppcMapTest implements ITestSet
     private static class HppcRemoveTest extends AbstractPrimPrimPutTest {
         @Override
         public int test() {
-            final IntIntOpenHashMap m_map = new IntIntOpenHashMap( m_keys.length, m_fillFactor );
+            final IntIntOpenHashMap m_map = new IntIntOpenHashMap( m_keys.length / 2 + 1, m_fillFactor );
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {

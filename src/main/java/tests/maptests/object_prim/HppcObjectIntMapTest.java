@@ -30,7 +30,7 @@ public class HppcObjectIntMapTest implements ITestSet
         @Override
         public void setup(int[] keys, float fillFactor, final int oneFailureOutOf ) {
             super.setup(keys, fillFactor, oneFailureOutOf);
-            m_map = new ObjectIntOpenHashMap<>( keys.length );
+            m_map = new ObjectIntOpenHashMap<>( keys.length, fillFactor );
             for ( Integer key : keys ) m_map.put( new Integer( key % oneFailureOutOf == 0 ? key+1 : key), key );
         }
 
@@ -46,7 +46,7 @@ public class HppcObjectIntMapTest implements ITestSet
     private static class HppcObjectIntPutTest extends AbstractObjKeyPutTest {
         @Override
         public int test() {
-            final ObjectIntOpenHashMap<Integer> m_map = new ObjectIntOpenHashMap<>( m_keys.length );
+            final ObjectIntOpenHashMap<Integer> m_map = new ObjectIntOpenHashMap<>( m_keys.length, m_fillFactor );
             for ( int i = 0; i < m_keys.length; ++i )
                 m_map.put( m_keys[ i ], i );
             for ( int i = 0; i < m_keys2.length; ++i )
@@ -58,7 +58,7 @@ public class HppcObjectIntMapTest implements ITestSet
     private static class HppcObjectIntRemoveTest extends AbstractObjKeyPutTest {
         @Override
         public int test() {
-            final ObjectIntOpenHashMap<Integer> m_map = new ObjectIntOpenHashMap<>( m_keys.length );
+            final ObjectIntOpenHashMap<Integer> m_map = new ObjectIntOpenHashMap<>( m_keys.length / 2 + 1, m_fillFactor );
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {

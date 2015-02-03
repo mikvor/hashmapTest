@@ -63,7 +63,7 @@ public class TroveIdentityMapTest implements ITestSet
     private static class TroveIdentityObjMapRemoveTest extends AbstractObjKeyPutIdentityTest {
         @Override
         public int test() {
-            final Map<Integer, Integer> m_map = new TCustomHashMap<>( IdentityHashingStrategy.INSTANCE, m_keys.length, m_fillFactor );
+            final Map<Integer, Integer> m_map = new TCustomHashMap<>( IdentityHashingStrategy.INSTANCE, m_keys.length / 2 + 1, m_fillFactor );
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {

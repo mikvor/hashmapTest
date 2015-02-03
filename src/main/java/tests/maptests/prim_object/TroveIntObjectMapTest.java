@@ -58,7 +58,7 @@ public class TroveIntObjectMapTest implements ITestSet
     private static class TroveIntObjectRemoveTest extends AbstractPrimObjectPutTest {
         @Override
         public int test() {
-            final TIntObjectMap<Integer> m_map = new TIntObjectHashMap<>( m_keys.length, m_fillFactor );
+            final TIntObjectMap<Integer> m_map = new TIntObjectHashMap<>( m_keys.length / 2 + 1, m_fillFactor );
             final Integer value = 1;
             int add = 0, remove = 0;
             while ( add < m_keys.length )

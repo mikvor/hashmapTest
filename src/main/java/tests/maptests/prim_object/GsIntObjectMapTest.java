@@ -58,7 +58,7 @@ public class GsIntObjectMapTest implements ITestSet
     private static class GsIntObjectRemoveTest extends AbstractPrimObjectPutTest {
         @Override
         public int test() {
-            final IntObjectHashMap<Integer> m_map = new IntObjectHashMap<>( m_keys.length );
+            final IntObjectHashMap<Integer> m_map = new IntObjectHashMap<>( m_keys.length / 2 + 1 );
             final Integer value = 1;
             int add = 0, remove = 0;
             while ( add < m_keys.length )

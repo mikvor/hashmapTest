@@ -66,7 +66,7 @@ public class HftcObjectIntMapTest implements ITestSet
     private static class HftcObjectIntRemoveTest extends AbstractObjKeyPutTest {
         @Override
         public int test() {
-            final HashObjIntMap<Integer> m_map = makeMap( m_keys.length, m_fillFactor );
+            final HashObjIntMap<Integer> m_map = makeMap( m_keys.length / 2 + 1, m_fillFactor );
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {

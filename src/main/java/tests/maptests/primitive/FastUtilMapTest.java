@@ -59,7 +59,7 @@ public class FastUtilMapTest implements ITestSet
     private static class FastUtilRemoveTest extends AbstractPrimPrimPutTest {
         @Override
         public int test() {
-            final Int2IntOpenHashMap m_map = new Int2IntOpenHashMap( m_keys.length, m_fillFactor );
+            final Int2IntOpenHashMap m_map = new Int2IntOpenHashMap( m_keys.length / 2 + 1, m_fillFactor );
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {

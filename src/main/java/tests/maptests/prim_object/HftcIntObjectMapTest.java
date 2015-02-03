@@ -67,7 +67,7 @@ public class HftcIntObjectMapTest implements ITestSet
     private static class HftcIntObjectRemoveTest extends AbstractPrimPrimPutTest {
         @Override
         public int test() {
-            final HashIntObjMap<Integer> m_map = makeMap( m_keys.length, m_fillFactor );
+            final HashIntObjMap<Integer> m_map = makeMap( m_keys.length / 2 + 1, m_fillFactor );
             final Integer value = 1;
             int add = 0, remove = 0;
             while ( add < m_keys.length )

@@ -60,7 +60,7 @@ public class GsMutableMapTest implements ITestSet
     private static class GsMutableRemoveTest extends AbstractPrimPrimPutTest {
         @Override
         public int test() {
-            final IntIntHashMap m_map = new IntIntHashMap(m_keys.length);
+            final IntIntHashMap m_map = new IntIntHashMap(m_keys.length / 2 + 1);
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {
