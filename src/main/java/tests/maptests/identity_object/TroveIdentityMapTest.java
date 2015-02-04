@@ -36,7 +36,7 @@ public class TroveIdentityMapTest implements ITestSet
             super.setup( keys, fillFactor, oneFailureOutOf );
             m_map = new TCustomHashMap<>( IdentityHashingStrategy.INSTANCE, keys.length, fillFactor );
             for (Integer key : m_keys)
-                m_map.put(oneFailureOutOf, key);
+                m_map.put(key % oneFailureOutOf == 0 ? key + 1 : key, key);
         }
 
         @Override
