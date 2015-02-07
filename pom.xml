@@ -65,7 +65,7 @@ questions.
             <version>3.0.3</version>
         </dependency>
 
-        <!-- HFTC / Koloboke -->
+        <!-- Koloboke -->
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>koloboke-api-jdk8</artifactId>

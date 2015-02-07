@@ -9,21 +9,21 @@ import tests.maptests.ITestSet;
 /**
  * Koloboke object-2-int map
  */
-public class HftcObjectIntMapTest implements ITestSet
+public class KolobokeObjectIntMapTest implements ITestSet
 {
     @Override
     public IMapTest getTest() {
-        return new HftcObjectIntGetTest();
+        return new KolobokeObjectIntGetTest();
     }
 
     @Override
     public IMapTest putTest() {
-        return new HftcObjectIntPutTest();
+        return new KolobokeObjectIntPutTest();
     }
 
     @Override
     public IMapTest removeTest() {
-        return new HftcObjectIntRemoveTest();
+        return new KolobokeObjectIntRemoveTest();
     }
 
     private static <T> HashObjIntMap<T> makeMap( final int size, final float fillFactor )
@@ -32,7 +32,7 @@ public class HftcObjectIntMapTest implements ITestSet
                 newMutableMap(size);
     }
 
-    private static class HftcObjectIntGetTest extends AbstractObjKeyGetTest {
+    private static class KolobokeObjectIntGetTest extends AbstractObjKeyGetTest {
         private HashObjIntMap<Integer> m_map;
 
         @Override
@@ -51,7 +51,7 @@ public class HftcObjectIntMapTest implements ITestSet
         }
     }
 
-    private static class HftcObjectIntPutTest extends AbstractObjKeyPutTest {
+    private static class KolobokeObjectIntPutTest extends AbstractObjKeyPutTest {
         @Override
         public int test() {
             final HashObjIntMap<Integer> m_map = makeMap( m_keys.length, m_fillFactor );
@@ -63,7 +63,7 @@ public class HftcObjectIntMapTest implements ITestSet
         }
     }
 
-    private static class HftcObjectIntRemoveTest extends AbstractObjKeyPutTest {
+    private static class KolobokeObjectIntRemoveTest extends AbstractObjKeyPutTest {
         @Override
         public int test() {
             final HashObjIntMap<Integer> m_map = makeMap( m_keys.length / 2 + 1, m_fillFactor );

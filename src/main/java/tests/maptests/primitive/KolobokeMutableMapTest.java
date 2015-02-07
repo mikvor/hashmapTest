@@ -9,21 +9,21 @@ import tests.maptests.ITestSet;
 /**
  * Koloboke HashIntIntMaps.newMutableMap test
  */
-public class HftcMutableMapTest implements ITestSet
+public class KolobokeMutableMapTest implements ITestSet
 {
     @Override
     public IMapTest getTest() {
-        return new HftcMutableGetTest();
+        return new KolobokeMutableGetTest();
     }
 
     @Override
     public IMapTest putTest() {
-        return new HftcMutablePutTest();
+        return new KolobokeMutablePutTest();
     }
 
     @Override
     public IMapTest removeTest() {
-        return new HftcMutableRemoveTest();
+        return new KolobokeMutableRemoveTest();
     }
 
     private static HashIntIntMap makeMap( final int size, final float fillFactor )
@@ -32,7 +32,7 @@ public class HftcMutableMapTest implements ITestSet
                             withHashConfig(HashConfig.fromLoads(fillFactor/2, fillFactor, fillFactor)).newMutableMap(size);
     }
 
-    private static class HftcMutableGetTest extends AbstractPrimPrimGetTest {
+    private static class KolobokeMutableGetTest extends AbstractPrimPrimGetTest {
         private HashIntIntMap m_map;
 
         @Override
@@ -51,7 +51,7 @@ public class HftcMutableMapTest implements ITestSet
         }
     }
 
-    private static class HftcMutablePutTest extends AbstractPrimPrimPutTest {
+    private static class KolobokeMutablePutTest extends AbstractPrimPrimPutTest {
         @Override
         public int test() {
             final HashIntIntMap m_map = makeMap(m_keys.length, m_fillFactor);
@@ -63,7 +63,7 @@ public class HftcMutableMapTest implements ITestSet
         }
     }
 
-    private static class HftcMutableRemoveTest extends AbstractPrimPrimPutTest {
+    private static class KolobokeMutableRemoveTest extends AbstractPrimPrimPutTest {
         @Override
         public int test() {
             final HashIntIntMap m_map = makeMap(m_keys.length / 2 + 1, m_fillFactor);
