@@ -59,6 +59,7 @@ public class MapTestRunner {
             FastUtilObjMapTest.class,
             KolobokeMutableObjTest.class, //+
             KolobokeNotNullKeyObjTest.class,
+            KolobokeHashCodeMixingObjTest.class,
             HppcObjMapTest.class,
             GsObjMapTest.class,
             JdkMapTest.class,  //+
