@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * BEFORE REMOVAL MAKE INNER CLASSES STATIC IN THE PARENT CLASS!!!
  */
-public class HftcNotNullKeyObjTest extends HftcMutableObjTest {
+public class KolobokeNotNullKeyObjTest extends KolobokeMutableObjTest {
     protected <T, V> Map<T, V> makeMap( final int size, final float fillFactor )
     {
         return HashObjObjMaps.getDefaultFactory().withNullKeyAllowed(false).

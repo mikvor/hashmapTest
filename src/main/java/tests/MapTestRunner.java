@@ -51,14 +51,15 @@ public class MapTestRunner {
     private static final Class[] TESTS_PRIMITIVE = {
             FastUtilMapTest.class,
             GsMutableMapTest.class,
-            HftcMutableMapTest.class, //+
+            KolobokeMutableMapTest.class, //+
             HppcMapTest.class,
             TroveMapTest.class, //+
     };
     private static final Class[] TESTS_WRAPPER = {
             FastUtilObjMapTest.class,
-            HftcMutableObjTest.class, //+
-            HftcNotNullKeyObjTest.class,
+            KolobokeMutableObjTest.class, //+
+            KolobokeNotNullKeyObjTest.class,
+            KolobokeHashCodeMixingObjTest.class,
             HppcObjMapTest.class,
             GsObjMapTest.class,
             JdkMapTest.class,  //+
@@ -68,14 +69,14 @@ public class MapTestRunner {
     private static final Class[] TESTS_PRIMITIVE_WRAPPER = {
             FastUtilIntObjectMapTest.class,
             GsIntObjectMapTest.class,
-            HftcIntObjectMapTest.class,   //+
+            KolobokeIntObjectMapTest.class,   //+
             HppcIntObjectMapTest.class,
             TroveIntObjectMapTest.class,   //+
     };
     private static final Class[] TESTS_WRAPPER_PRIMITIVE = {
             FastUtilObjectIntMapTest.class,
             GsObjectIntMapTest.class,
-            HftcObjectIntMapTest.class,   //+
+            KolobokeObjectIntMapTest.class,   //+
             HppcObjectIntMapTest.class,
             TroveObjectIntMapTest.class,   //+
     };
@@ -83,7 +84,7 @@ public class MapTestRunner {
     private static final Class[] TESTS_IDENTITY = {
             FastUtilRef2ObjectMapTest.class,
             GsIdentityMapTest.class,
-            HftcIdentityMapTest.class,
+            KolobokeIdentityMapTest.class,
             HppcIdentityMapTest.class,
             JDKIdentityMapTest.class,
             TroveIdentityMapTest.class,

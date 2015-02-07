@@ -7,7 +7,7 @@ public class TableFormatter {
     public static void main(String[] args) {
         final String text = "\t10000\t100000\t1000000\t10000000\t100000000\n" +
                 "tests.maptests.object.FastUtilObjMapTest\t1720\t3002\t6015\t9360\t13292\n" +
-                "tests.maptests.object.HftcMutableObjTest\t1146\t1378\t2928\t6215\t5945\n" +
+                "tests.maptests.object.KolobokeMutableObjTest\t1146\t1378\t2928\t6215\t5945\n" +
                 "tests.maptests.object.HppcObjMapTest\t1726\t3085\t5692\t9125\t13139\n" +
                 "tests.maptests.object.GsObjMapTest\t1566\t2242\t4582\t6012\t8110\n" +
                 "tests.maptests.object.JdkMapTest\t1151\t1776\t3759\t5341\t11523\n" +

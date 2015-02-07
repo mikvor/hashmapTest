@@ -11,21 +11,21 @@ import tests.maptests.primitive.AbstractPrimPrimPutTest;
 /**
  * Koloboke int-2-object map test
  */
-public class HftcIntObjectMapTest implements ITestSet
+public class KolobokeIntObjectMapTest implements ITestSet
 {
     @Override
     public IMapTest getTest() {
-        return new HftcIntObjectGetTest();
+        return new KolobokeIntObjectGetTest();
     }
 
     @Override
     public IMapTest putTest() {
-        return new HftcIntObjectPutTest();
+        return new KolobokeIntObjectPutTest();
     }
 
     @Override
     public IMapTest removeTest() {
-        return new HftcIntObjectRemoveTest();
+        return new KolobokeIntObjectRemoveTest();
     }
 
     private static <T> HashIntObjMap<T> makeMap( final int size, final float fillFactor )
@@ -33,7 +33,7 @@ public class HftcIntObjectMapTest implements ITestSet
         return HashIntObjMaps.getDefaultFactory().withHashConfig(HashConfig.fromLoads( fillFactor/2, fillFactor, fillFactor)).newMutableMap( size );
     }
 
-    private static class HftcIntObjectGetTest extends AbstractPrimPrimGetTest {
+    private static class KolobokeIntObjectGetTest extends AbstractPrimPrimGetTest {
         private HashIntObjMap<Integer> m_map;
 
         @Override
@@ -52,7 +52,7 @@ public class HftcIntObjectMapTest implements ITestSet
         }
     }
 
-    private static class HftcIntObjectPutTest extends AbstractPrimPrimPutTest {
+    private static class KolobokeIntObjectPutTest extends AbstractPrimPrimPutTest {
         @Override
         public int test() {
             final HashIntObjMap<Integer> m_map = makeMap( m_keys.length, m_fillFactor );
@@ -64,7 +64,7 @@ public class HftcIntObjectMapTest implements ITestSet
         }
     }
 
-    private static class HftcIntObjectRemoveTest extends AbstractPrimPrimPutTest {
+    private static class KolobokeIntObjectRemoveTest extends AbstractPrimPrimPutTest {
         @Override
         public int test() {
             final HashIntObjMap<Integer> m_map = makeMap( m_keys.length / 2 + 1, m_fillFactor );
