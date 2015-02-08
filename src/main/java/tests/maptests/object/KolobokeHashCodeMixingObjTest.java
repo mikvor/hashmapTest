@@ -2,7 +2,6 @@ package tests.maptests.object;
 
 import net.openhft.koloboke.collect.hash.HashConfig;
 import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
-import tests.maptests.HashCodeMixingEquivalence;
 
 import java.util.Map;
 

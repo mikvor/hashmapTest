@@ -1,4 +1,4 @@
-package tests.maptests;
+package tests.maptests.object;
 
 import net.openhft.koloboke.collect.StatelessEquivalence;
 
