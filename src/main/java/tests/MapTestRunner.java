@@ -8,6 +8,7 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import tests.maptests.IMapTest;
 import tests.maptests.ITestSet;
+import tests.maptests.article_examples.*;
 import tests.maptests.identity_object.*;
 import tests.maptests.object.*;
 import tests.maptests.object_prim.*;
@@ -48,6 +49,14 @@ public class MapTestRunner {
     //increase this value significantly (Integer.MAX_VALUE is a good candidate) to revert to the original "always successful get" tests
     private static final int ONE_FAIL_OUT_OF = 2;
 
+    private static final Class[] TESTS_ARTICLE = {
+            IntIntMap1Test.class,
+            IntIntMap2Test.class,
+            IntIntMap3Test.class,
+            IntIntMap4Test.class,
+            IntIntMap4aTest.class,
+    };
+
     private static final Class[] TESTS_PRIMITIVE = {
             FastUtilMapTest.class,
             GsMutableMapTest.class,
@@ -65,6 +74,7 @@ public class MapTestRunner {
             JdkMapTest.class,  //+
             JdkMapTestDifferentCapacity.class,  //+
             TroveObjMapTest.class,   //+
+            ObjObjMapTest.class   //
     };
     private static final Class[] TESTS_PRIMITIVE_WRAPPER = {
             FastUtilIntObjectMapTest.class,
@@ -108,6 +118,7 @@ public class MapTestRunner {
     private static String runTestSet(final String testSetName) throws RunnerException, InstantiationException, IllegalAccessException
     {
         final List<Class> tests = new ArrayList<>();
+        tests.addAll( Arrays.asList( TESTS_ARTICLE ) );
         tests.addAll( Arrays.asList( TESTS_PRIMITIVE ) );
         tests.addAll( Arrays.asList( TESTS_WRAPPER ) );
         tests.addAll( Arrays.asList( TESTS_PRIMITIVE_WRAPPER ) );
@@ -134,7 +145,7 @@ public class MapTestRunner {
                         .warmupBatchSize(TOTAL_SIZE / mapSize)
                         .warmupIterations(10)
                         .measurementBatchSize(TOTAL_SIZE / mapSize)
-                        .measurementIterations(10)
+                        .measurementIterations(8)
                         .jvmArgsAppend("-Xmx30G")
                         .param("m_mapSize", Integer.toString(mapSize))
                         .param("m_className", testClass.getCanonicalName())
@@ -201,7 +212,7 @@ public class MapTestRunner {
         return sb.toString();
     }
 
-    private static class KeyGenerator
+    public static class KeyGenerator
     {
         public static int s_mapSize;
         public static int[] s_keys;
