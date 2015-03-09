@@ -137,7 +137,7 @@ public class IntIntMap2 implements IntIntMap
      * Find an index of a cell which should be updated by 'put' operation.
      * It can be:
      * 1) a cell with a given key
-     * 2) first removed/free cell in the chain
+     * 2) first free cell in the chain
      * @param key Key to look for
      * @return Index of a cell to be updated by a 'put' operation
      */

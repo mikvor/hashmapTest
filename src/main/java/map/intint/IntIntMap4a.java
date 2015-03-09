@@ -54,7 +54,7 @@ public class IntIntMap4a  implements IntIntMap
 
         if ( k == FREE_KEY )
             return NO_VALUE;  //end of chain already
-        if ( k == key ) //we check FREE and REMOVED prior to this call
+        if ( k == key ) //we check FREE prior to this call
             return m_data[ ptr + 1 ];
 
         while ( true )
@@ -92,7 +92,7 @@ public class IntIntMap4a  implements IntIntMap
                 ++m_size;
             return NO_VALUE;
         }
-        else if ( k == key ) //we check FREE and REMOVED prior to this call
+        else if ( k == key ) //we check FREE prior to this call
         {
             final int ret = m_data[ ptr + 1 ];
             m_data[ ptr + 1 ] = value;

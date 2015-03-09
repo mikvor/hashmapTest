@@ -53,7 +53,7 @@ public class IntIntMap4 implements IntIntMap
         long c = m_ar[ idx ];
         if ( c == FREE_CELL )
             return NO_VALUE;  //end of chain already
-        if ( ((int)(c & KEY_MASK)) == key ) //we check FREE and REMOVED prior to this call
+        if ( ((int)(c & KEY_MASK)) == key ) //we check FREE prior to this call
             return (int) (c >> 32);
         while ( true )
         {
@@ -89,7 +89,7 @@ public class IntIntMap4 implements IntIntMap
                 ++m_size;
             return NO_VALUE;
         }
-        else if ( ((int)(c & KEY_MASK)) == key ) //we check FREE and REMOVED prior to this call
+        else if ( ((int)(c & KEY_MASK)) == key ) //we check FREE prior to this call
         {
             m_ar[ idx ] = (((long)key) & KEY_MASK) | ( ((long)value) << 32 );
             return (int) (c >> 32);
@@ -133,7 +133,7 @@ public class IntIntMap4 implements IntIntMap
         long c = m_ar[ idx ];
         if ( c == FREE_CELL )
             return NO_VALUE;  //end of chain already
-        if ( ((int)(c & KEY_MASK)) == key ) //we check FREE and REMOVED prior to this call
+        if ( ((int)(c & KEY_MASK)) == key ) //we check FREE prior to this call
         {
             --m_size;
             shiftKeys( idx );

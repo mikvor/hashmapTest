@@ -2,8 +2,7 @@ package map.intint;
 
 /**
  * IntIntMap2 without states array.
- * We introduce 2 more pairs of fields - one for key=0, which is used as 'used' flag
- * and another one for key=1, which is used as 'removed' flag
+ * We introduce one extra pairs of fields - for key=0, which is used as 'used' flag
  */
 public class IntIntMap3 implements IntIntMap
 {
@@ -172,7 +171,7 @@ public class IntIntMap3 implements IntIntMap
     private int getReadIndex( final int key )
     {
         int idx = getStartIndex( key );
-        if ( m_keys[ idx ] == key ) //we check FREE and REMOVED prior to this call
+        if ( m_keys[ idx ] == key ) //we check FREE prior to this call
             return idx;
         if ( m_keys[ idx ] == FREE_KEY ) //end of chain already
             return -1;
@@ -191,7 +190,7 @@ public class IntIntMap3 implements IntIntMap
      * Find an index of a cell which should be updated by 'put' operation.
      * It can be:
      * 1) a cell with a given key
-     * 2) first removed/free cell in the chain
+     * 2) first free cell in the chain
      * @param key Key to look for
      * @return Index of a cell to be updated by a 'put' operation
      */
