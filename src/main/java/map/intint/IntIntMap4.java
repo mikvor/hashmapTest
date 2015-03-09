@@ -7,10 +7,7 @@ package map.intint;
 public class IntIntMap4 implements IntIntMap
 {
     private static final int FREE_KEY = 0;
-    private static final int REMOVED_KEY = 1;
-
     private static final long FREE_CELL = 0;
-    private static final long REMOVED_CELL = 1;
 
     private static long KEY_MASK = 0xFFFFFFFFL;
 
@@ -23,11 +20,6 @@ public class IntIntMap4 implements IntIntMap
     private boolean m_hasFreeKey;
     /** Value of 'free' key */
     private int m_freeValue;
-
-    /** Do we have 'removed' key in the map? */
-    private boolean m_hasRemovedKey;
-    /** Value of 'removed' key */
-    private int m_removedValue;
 
     /** Fill factor, must be between (0 and 1) */
     private final float m_fillFactor;
@@ -56,8 +48,6 @@ public class IntIntMap4 implements IntIntMap
     {
         if ( key == FREE_KEY )
             return m_hasFreeKey ? m_freeValue : NO_VALUE;
-        else if ( key == REMOVED_KEY )
-            return m_hasRemovedKey ? m_removedValue : NO_VALUE;
 
         int idx = getStartIndex(key);
         long c = m_ar[ idx ];
@@ -87,17 +77,7 @@ public class IntIntMap4 implements IntIntMap
             m_freeValue = value;
             return ret;
         }
-        else if ( key == REMOVED_KEY )
-        {
-            final int ret = m_removedValue;
-            if ( !m_hasRemovedKey )
-                ++m_size;
-            m_hasRemovedKey = true;
-            m_removedValue = value;
-            return ret;
-        }
 
-        int firstRemoved = -1;
         int idx = getStartIndex( key );
         long c = m_ar[idx];
         if ( c == FREE_CELL ) //end of chain already
@@ -109,8 +89,6 @@ public class IntIntMap4 implements IntIntMap
                 ++m_size;
             return NO_VALUE;
         }
-        else if ( c == REMOVED_CELL )
-            firstRemoved = idx; //we may find a key later
         else if ( ((int)(c & KEY_MASK)) == key ) //we check FREE and REMOVED prior to this call
         {
             m_ar[ idx ] = (((long)key) & KEY_MASK) | ( ((long)value) << 32 );
@@ -123,19 +101,12 @@ public class IntIntMap4 implements IntIntMap
             c = m_ar[ idx ];
             if ( c == FREE_CELL )
             {
-                if ( firstRemoved != -1 )
-                    idx = firstRemoved;
                 m_ar[ idx ] = (((long)key) & KEY_MASK) | ( ((long)value) << 32 );
                 if ( m_size >= m_threshold )
                     rehash( m_ar.length * 2 ); //size is set inside
                 else
                     ++m_size;
                 return NO_VALUE;
-            }
-            else if ( c == REMOVED_CELL )
-            {
-                if ( firstRemoved == -1 )
-                    firstRemoved = idx;
             }
             else if ( ((int)(c & KEY_MASK)) == key )
             {
@@ -157,16 +128,6 @@ public class IntIntMap4 implements IntIntMap
             --m_size;
             return ret;
         }
-        else if ( key == REMOVED_KEY )
-        {
-            if ( !m_hasRemovedKey )
-                return NO_VALUE;
-            m_hasRemovedKey = false;
-            final int ret = m_removedValue;
-            m_removedValue = NO_VALUE;
-            --m_size;
-            return ret;
-        }
 
         int idx = getStartIndex( key );
         long c = m_ar[ idx ];
@@ -174,11 +135,8 @@ public class IntIntMap4 implements IntIntMap
             return NO_VALUE;  //end of chain already
         if ( ((int)(c & KEY_MASK)) == key ) //we check FREE and REMOVED prior to this call
         {
-            if ( m_ar[ getNextIndex( idx ) ] == FREE_CELL )
-                m_ar[ idx ] = FREE_CELL;
-            else
-                m_ar[ idx ] = REMOVED_CELL;
             --m_size;
+            shiftKeys( idx );
             return (int) (c >> 32);
         }
         while ( true )
@@ -189,11 +147,8 @@ public class IntIntMap4 implements IntIntMap
                 return NO_VALUE;
             if ( ((int)(c & KEY_MASK)) == key )
             {
-                if ( m_ar[ getNextIndex( idx ) ] == FREE_CELL )
-                    m_ar[ idx ] = FREE_CELL;
-                else
-                    m_ar[ idx ] = REMOVED_CELL;
                 --m_size;
+                shiftKeys( idx );
                 return (int) (c >> 32);
             }
         }
@@ -202,6 +157,30 @@ public class IntIntMap4 implements IntIntMap
     public int size()
     {
         return m_size;
+    }
+
+    private int shiftKeys(int pos)
+    {
+        // Shift entries with the same hash.
+        int last, slot;
+        int k;
+        final long[] data = this.m_ar;
+        while ( true )
+        {
+            pos = ((last = pos) + 1) & m_mask;
+            while ( true )
+            {
+                if ((k = ((int)(data[pos] & KEY_MASK))) == FREE_KEY)
+                {
+                    data[last] = FREE_CELL;
+                    return last;
+                }
+                slot = getStartIndex(k); //calculate the starting slot for the current key
+                if (last <= pos ? last >= slot || slot > pos : last >= slot && slot > pos) break;
+                pos = (pos + 1) & m_mask; //go to the next entry
+            }
+            data[last] = data[pos];
+        }
     }
 
     private void rehash( final int newCapacity )
@@ -213,17 +192,17 @@ public class IntIntMap4 implements IntIntMap
         final long[] oldData = m_ar;
 
         m_ar = new long[ newCapacity ];
-        m_size = ( m_hasFreeKey ? 1 : 0 ) + ( m_hasRemovedKey ? 1 : 0 );
+        m_size = m_hasFreeKey ? 1 : 0;
 
         for ( int i = oldCapacity; i-- > 0; ) {
             final int oldKey = (int) (oldData[ i ] & KEY_MASK);
-            if( oldKey != FREE_KEY && oldKey != REMOVED_KEY )
+            if( oldKey != FREE_KEY )
                 put( oldKey, (int) (oldData[ i ] >> 32));
         }
     }
     private int getStartIndex( final int key )
     {
-        return key & m_mask;
+        return Tools.phiMix(key) & m_mask;
     }
 
     private int getNextIndex( final int currentIndex )

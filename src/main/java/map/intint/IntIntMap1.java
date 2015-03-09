@@ -6,10 +6,6 @@ package map.intint;
  */
 public class IntIntMap1 implements IntIntMap
 {
-    private static final byte FREE = 0;
-    private static final byte USED = 1;
-    private static final byte REMOVED = 2;
-
     public static final int NO_KEY = 0;
     public static final int NO_VALUE = 0;
 
@@ -18,7 +14,7 @@ public class IntIntMap1 implements IntIntMap
     /** Values */
     private int[] m_values;
     /** Occupied? */
-    private byte[] m_state;
+    private boolean[] m_used;
 
     /** Fill factor, must be between (0 and 1) */
     private final float m_fillFactor;
@@ -39,7 +35,7 @@ public class IntIntMap1 implements IntIntMap
                     "; max possible = " + Integer.MAX_VALUE );
         m_keys = new int[(int) capacity];
         m_values = new int[(int) capacity];
-        m_state = new byte[(int) capacity];
+        m_used = new boolean[(int) capacity];
         m_threshold = size;
         m_fillFactor = fillFactor;
     }
@@ -59,11 +55,11 @@ public class IntIntMap1 implements IntIntMap
             idx = getPutIndex( key );
         }
         final int prev = m_values[ idx ];
-        if ( m_state[ idx ] != USED )
+        if ( !m_used[ idx ] )
         {
             m_keys[ idx ] = key;
             m_values[ idx ] = value;
-            m_state[ idx ] = USED;
+            m_used[ idx ] = true;
             ++m_size;
             if ( m_size >= m_threshold )
                 rehash( m_keys.length * 2 );
@@ -82,9 +78,7 @@ public class IntIntMap1 implements IntIntMap
         if ( idx == -1 )
             return NO_VALUE;
         final int res = m_values[ idx ];
-        m_keys[ idx ] = NO_KEY;
-        m_values[ idx ] = NO_VALUE;
-        m_state[ idx ] = REMOVED;
+        shiftKeys( idx );
         --m_size;
         return res;
     }
@@ -100,15 +94,15 @@ public class IntIntMap1 implements IntIntMap
         final int oldCapacity = m_keys.length;
         final int[] oldKeys = m_keys;
         final int[] oldValues = m_values;
-        final byte[] oldStates = m_state;
+        final boolean[] oldStates = m_used;
 
         m_keys = new int[ newCapacity ];
         m_values = new int[ newCapacity ];
-        m_state = new byte[ newCapacity ];
+        m_used = new boolean[ newCapacity ];
         m_size = 0;
 
         for ( int i = oldCapacity; i-- > 0; ) {
-            if( oldStates[i] == USED )
+            if( oldStates[i] )
                 put( oldKeys[ i ], oldValues[ i ] );
         }
     }
@@ -121,16 +115,16 @@ public class IntIntMap1 implements IntIntMap
     private int getReadIndex( final int key )
     {
         int idx = getStartIndex( key );
-        if ( m_keys[ idx ] == key && m_state[ idx ] == USED )
+        if ( m_keys[ idx ] == key && m_used[ idx ] )
             return idx;
-        if ( m_keys[ idx ] == FREE ) //end of chain already
+        if ( !m_used[ idx ] ) //end of chain already
             return -1;
         final int startIdx = idx;
         while (( idx = getNextIndex( idx ) ) != startIdx )
         {
-            if ( m_state[ idx ] == FREE )
+            if ( !m_used[ idx ] )
                 return -1;
-            if ( m_keys[ idx ] == key && m_state[ idx ] == USED )
+            if ( m_keys[ idx ] == key && m_used[ idx ] )
                 return idx;
         }
         return -1;
@@ -152,7 +146,7 @@ public class IntIntMap1 implements IntIntMap
         //key not found, find insertion point
         final int startIdx = getStartIndex( key );
         int idx = startIdx;
-        while ( m_state[ idx ] == USED )
+        while ( m_used[ idx ] )
         {
             idx = getNextIndex( idx );
             if ( idx == startIdx )
@@ -164,7 +158,7 @@ public class IntIntMap1 implements IntIntMap
 
     private int getStartIndex( final int key )
     {
-        final int idx = key % m_keys.length;
+        final int idx = Tools.phiMix( key ) % m_keys.length;
         return idx >= 0 ? idx : -idx;
     }
 
@@ -172,4 +166,35 @@ public class IntIntMap1 implements IntIntMap
     {
         return currentIndex < m_keys.length - 1 ? currentIndex + 1 : 0;
     }
+
+    private int shiftKeys(int pos)
+    {
+        // Shift entries with the same hash.
+        int last, slot;
+        int k;
+        final int[] keys = this.m_keys;
+        while ( true )
+        {
+            last = pos;
+            pos = getNextIndex(pos);
+            while ( true )
+            {
+                k = keys[ pos ];
+                if ( !m_used[pos] )
+                {
+                    keys[last] = NO_KEY;
+                    m_values[ last ] = NO_VALUE;
+                    m_used[ last ] = false;
+                    return last;
+                }
+                slot = getStartIndex(k); //calculate the starting slot for the current key
+                if (last <= pos ? last >= slot || slot > pos : last >= slot && slot > pos) break;
+                pos = getNextIndex(pos);
+            }
+            keys[last] = k;
+            m_values[last] = m_values[pos];
+            m_used[last] = m_used[pos];
+        }
+    }
+
 }

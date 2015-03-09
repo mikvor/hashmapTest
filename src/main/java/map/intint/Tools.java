@@ -38,5 +38,13 @@ public class Tools {
    		return (int)s;
    	}
 
+    //taken from FastUtil
+    private static final int INT_PHI = 0x9E3779B9;
+
+    public static int phiMix( final int x ) {
+   		final int h = x * INT_PHI;
+   		return h ^ (h >> 16);
+   	}
+
 
 }

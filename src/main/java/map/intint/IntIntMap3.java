@@ -8,7 +8,6 @@ package map.intint;
 public class IntIntMap3 implements IntIntMap
 {
     private static final int FREE_KEY = 0;
-    private static final int REMOVED_KEY = 1;
 
     public static final int NO_VALUE = 0;
 
@@ -21,11 +20,6 @@ public class IntIntMap3 implements IntIntMap
     private boolean m_hasFreeKey;
     /** Value of 'free' key */
     private int m_freeValue;
-
-    /** Do we have 'removed' key in the map? */
-    private boolean m_hasRemovedKey;
-    /** Value of 'removed' key */
-    private int m_removedValue;
 
     /** Fill factor, must be between (0 and 1) */
     private final float m_fillFactor;
@@ -55,8 +49,6 @@ public class IntIntMap3 implements IntIntMap
     {
         if ( key == FREE_KEY)
             return m_hasFreeKey ? m_freeValue : NO_VALUE;
-        else if ( key == REMOVED_KEY )
-            return m_hasRemovedKey ? m_removedValue : NO_VALUE;
 
         final int idx = getReadIndex( key );
         return idx != -1 ? m_values[ idx ] : NO_VALUE;
@@ -73,17 +65,8 @@ public class IntIntMap3 implements IntIntMap
             m_freeValue = value;
             return ret;
         }
-        else if ( key == REMOVED_KEY )
-        {
-            final int ret = m_removedValue;
-            if ( !m_hasRemovedKey )
-                ++m_size;
-            m_hasRemovedKey = true;
-            m_removedValue = value;
-            return ret;
-        }
 
-        int idx = getPutIndex( key );
+        int idx = getPutIndex(key);
         if ( idx < 0 )
         { //no insertion point? Should not happen...
             rehash( m_keys.length * 2 );
@@ -118,26 +101,14 @@ public class IntIntMap3 implements IntIntMap
             --m_size;
             return ret;
         }
-        else if ( key == REMOVED_KEY )
-        {
-            if ( !m_hasRemovedKey )
-                return NO_VALUE;
-            m_hasRemovedKey = false;
-            final int ret = m_removedValue;
-            m_removedValue = NO_VALUE;
-            --m_size;
-            return ret;
-        }
 
-        int idx = getReadIndex( key );
+        int idx = getReadIndex(key);
         if ( idx == -1 )
             return NO_VALUE;
+
         final int res = m_values[ idx ];
-        if ( m_keys[ getNextIndex( idx ) ] == FREE_KEY )
-            m_keys[ idx ] = FREE_KEY;
-        else
-            m_keys[ idx ] = REMOVED_KEY;
         m_values[ idx ] = NO_VALUE;
+        shiftKeys(idx);
         --m_size;
         return res;
     }
@@ -158,11 +129,38 @@ public class IntIntMap3 implements IntIntMap
 
         m_keys = new int[ newCapacity ];
         m_values = new int[ newCapacity ];
-        m_size = ( m_hasFreeKey ? 1 : 0 ) + ( m_hasRemovedKey ? 1 : 0 );
+        m_size = m_hasFreeKey ? 1 : 0;
 
         for ( int i = oldCapacity; i-- > 0; ) {
-            if( oldKeys[ i ] != FREE_KEY && oldKeys[ i ] != REMOVED_KEY )
+            if( oldKeys[ i ] != FREE_KEY  )
                 put( oldKeys[ i ], oldValues[ i ] );
+        }
+    }
+
+    private int shiftKeys(int pos)
+    {
+        // Shift entries with the same hash.
+        int last, slot;
+        int k;
+        final int[] keys = this.m_keys;
+        while ( true )
+        {
+            last = pos;
+            pos = getNextIndex(pos);
+            while ( true )
+            {
+                if ((k = keys[pos]) == FREE_KEY)
+                {
+                    keys[last] = FREE_KEY;
+                    m_values[ last ] = NO_VALUE;
+                    return last;
+                }
+                slot = getStartIndex(k); //calculate the starting slot for the current key
+                if (last <= pos ? last >= slot || slot > pos : last >= slot && slot > pos) break;
+                pos = getNextIndex(pos);
+            }
+            keys[last] = k;
+            m_values[last] = m_values[pos];
         }
     }
 
@@ -207,7 +205,7 @@ public class IntIntMap3 implements IntIntMap
         if ( m_keys[ startIdx ] == FREE_KEY )
             return startIdx;
         int idx = startIdx;
-        while ( m_keys[ idx ] != FREE_KEY && m_keys[ idx ] != REMOVED_KEY )
+        while ( m_keys[ idx ] != FREE_KEY )
         {
             idx = getNextIndex( idx );
             if ( idx == startIdx )
@@ -219,7 +217,7 @@ public class IntIntMap3 implements IntIntMap
 
     private int getStartIndex( final int key )
     {
-        return key & m_mask;
+        return Tools.phiMix( key ) & m_mask;
     }
 
     private int getNextIndex( final int currentIndex )

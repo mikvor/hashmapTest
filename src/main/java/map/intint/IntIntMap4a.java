@@ -6,7 +6,6 @@ package map.intint;
 public class IntIntMap4a  implements IntIntMap
 {
     private static final int FREE_KEY = 0;
-    private static final int REMOVED_KEY = 1;
 
     public static final int NO_VALUE = 0;
 
@@ -17,11 +16,6 @@ public class IntIntMap4a  implements IntIntMap
     private boolean m_hasFreeKey;
     /** Value of 'free' key */
     private int m_freeValue;
-
-    /** Do we have 'removed' key in the map? */
-    private boolean m_hasRemovedKey;
-    /** Value of 'removed' key */
-    private int m_removedValue;
 
     /** Fill factor, must be between (0 and 1) */
     private final float m_fillFactor;
@@ -51,16 +45,12 @@ public class IntIntMap4a  implements IntIntMap
 
     public int get( final int key )
     {
-        int ptr = (key & m_mask) << 1;
+        int ptr = ( Tools.phiMix( key ) & m_mask) << 1;
 
         if ( key == FREE_KEY )
             return m_hasFreeKey ? m_freeValue : NO_VALUE;
 
         int k = m_data[ ptr ];
-
-        if ( key == REMOVED_KEY )
-            return m_hasRemovedKey ? m_removedValue : NO_VALUE;
-
 
         if ( k == FREE_KEY )
             return NO_VALUE;  //end of chain already
@@ -89,17 +79,8 @@ public class IntIntMap4a  implements IntIntMap
             m_freeValue = value;
             return ret;
         }
-        else if ( key == REMOVED_KEY )
-        {
-            final int ret = m_removedValue;
-            if ( !m_hasRemovedKey )
-                ++m_size;
-            m_hasRemovedKey = true;
-            m_removedValue = value;
-            return ret;
-        }
 
-        int ptr = ( key & m_mask ) << 1;
+        int ptr = ( Tools.phiMix( key ) & m_mask) << 1;
         int k = m_data[ptr];
         if ( k == FREE_KEY ) //end of chain already
         {
@@ -118,18 +99,12 @@ public class IntIntMap4a  implements IntIntMap
             return ret;
         }
 
-        int firstRemoved = -1;
-        if ( k == REMOVED_KEY )
-            firstRemoved = ptr; //we may find a key later
-
         while ( true )
         {
             ptr = ( ptr + 2 ) & m_mask2; //that's next index calculation
             k = m_data[ ptr ];
             if ( k == FREE_KEY )
             {
-                if ( firstRemoved != -1 )
-                    ptr = firstRemoved;
                 m_data[ ptr ] = key;
                 m_data[ ptr + 1 ] = value;
                 if ( m_size >= m_threshold )
@@ -144,11 +119,6 @@ public class IntIntMap4a  implements IntIntMap
                 m_data[ ptr + 1 ] = value;
                 return ret;
             }
-            else if ( k == REMOVED_KEY )
-            {
-                if ( firstRemoved == -1 )
-                    firstRemoved = ptr;
-            }
         }
     }
 
@@ -162,26 +132,15 @@ public class IntIntMap4a  implements IntIntMap
             --m_size;
             return m_freeValue; //value is not cleaned
         }
-        else if ( key == REMOVED_KEY )
-        {
-            if ( !m_hasRemovedKey )
-                return NO_VALUE;
-            m_hasRemovedKey = false;
-            --m_size;
-            return m_removedValue; //value is not cleaned
-        }
 
-        int ptr = ( key & m_mask ) << 1;
+        int ptr = ( Tools.phiMix( key ) & m_mask) << 1;
         int k = m_data[ ptr ];
-        if ( k == key ) //we check FREE and REMOVED prior to this call
+        if ( k == key ) //we check FREE prior to this call
         {
-            //try to reduce the number of removed cells
-            if ( m_data[ (ptr + 2) & m_mask2 ] == FREE_KEY )
-                m_data[ ptr ] = FREE_KEY;
-            else
-                m_data[ ptr ] = REMOVED_KEY;
+            final int res = m_data[ ptr + 1 ];
+            shiftKeys( ptr );
             --m_size;
-            return m_data[ ptr + 1 ]; //do not clean the value
+            return res;
         }
         else if ( k == FREE_KEY )
             return NO_VALUE;  //end of chain already
@@ -191,18 +150,41 @@ public class IntIntMap4a  implements IntIntMap
             k = m_data[ ptr ];
             if ( k == key )
             {
-                //try to reduce the number of removed cells
-                if ( m_data[ (ptr + 2) & m_mask2 ] == FREE_KEY )
-                    m_data[ ptr ] = FREE_KEY;
-                else
-                    m_data[ ptr ] = REMOVED_KEY;
+                final int res = m_data[ ptr + 1 ];
+                shiftKeys( ptr );
                 --m_size;
-                return m_data[ ptr + 1 ]; //do not clean the value
+                return res;
             }
             else if ( k == FREE_KEY )
                 return NO_VALUE;
         }
     }
+
+    private int shiftKeys(int pos)
+    {
+        // Shift entries with the same hash.
+        int last, slot;
+        int k;
+        final int[] data = this.m_data;
+        while ( true )
+        {
+            pos = ((last = pos) + 2) & m_mask2;
+            while ( true )
+            {
+                if ((k = data[pos]) == FREE_KEY)
+                {
+                    data[last] = FREE_KEY;
+                    return last;
+                }
+                slot = ( Tools.phiMix( k ) & m_mask) << 1; //calculate the starting slot for the current key
+                if (last <= pos ? last >= slot || slot > pos : last >= slot && slot > pos) break;
+                pos = (pos + 2) & m_mask2; //go to the next entry
+            }
+            data[last] = k;
+            data[last + 1] = data[pos + 1];
+        }
+    }
+
 
     public int size()
     {
@@ -219,13 +201,18 @@ public class IntIntMap4a  implements IntIntMap
         final int[] oldData = m_data;
 
         m_data = new int[ newCapacity ];
-        m_size = ( m_hasFreeKey ? 1 : 0 ) + ( m_hasRemovedKey ? 1 : 0 );
+        m_size = m_hasFreeKey ? 1 : 0;
 
         for ( int i = 0; i < oldCapacity; i += 2 ) {
             final int oldKey = oldData[ i ];
-            if( oldKey != FREE_KEY && oldKey != REMOVED_KEY )
+            if( oldKey != FREE_KEY )
                 put( oldKey, oldData[ i + 1 ]);
         }
     }
+
+//    private int getStartIdx( final int key )
+//    {
+//        return ( Tools.phiMix( key ) & m_mask) << 1;
+//    }
 }
 
