@@ -2,8 +2,6 @@ package tests.maptests.object;
 
 import net.openhft.koloboke.collect.StatelessEquivalence;
 
-import javax.annotation.Nonnull;
-
 public final class HashCodeMixingEquivalence extends StatelessEquivalence {
     public static final HashCodeMixingEquivalence INSTANCE = new HashCodeMixingEquivalence();
 
@@ -13,12 +11,12 @@ public final class HashCodeMixingEquivalence extends StatelessEquivalence {
     private HashCodeMixingEquivalence() {}
     
     @Override
-    public boolean equivalent(@Nonnull Object o1, @Nonnull Object o2) {
+    public boolean equivalent(Object o1, Object o2) {
         return o1.equals(o2);
     }
 
     @Override
-    public int hash(@Nonnull Object obj) {
+    public int hash(Object obj) {
         return obj.hashCode() * INT_PHI_MAGIC;
     }
 }

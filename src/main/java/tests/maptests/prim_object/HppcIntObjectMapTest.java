@@ -1,11 +1,11 @@
 package tests.maptests.prim_object;
 
-import com.carrotsearch.hppc.IntObjectOpenHashMap;
+import com.carrotsearch.hppc.IntObjectHashMap;
 import tests.maptests.IMapTest;
 import tests.maptests.ITestSet;
 
 /**
- * HPPC IntObjectOpenHashMap test
+ * HPPC IntObjectHashMap test
  */
 public class HppcIntObjectMapTest implements ITestSet
 {
@@ -25,12 +25,12 @@ public class HppcIntObjectMapTest implements ITestSet
     }
 
     private static class HppcIntObjectGetTest extends AbstractPrimObjectGetTest {
-        private IntObjectOpenHashMap<Integer> m_map;
+        private IntObjectHashMap<Integer> m_map;
 
         @Override
         public void setup(int[] keys, float fillFactor, int oneFailOutOf) {
             super.setup(keys, fillFactor, oneFailOutOf);
-            m_map = new IntObjectOpenHashMap<>( keys.length, 0.5f );
+            m_map = new IntObjectHashMap<>( keys.length, 0.5f );
             for ( int key : keys ) m_map.put( key % oneFailOutOf == 0 ? key + 1 : key, key );
         }
 
@@ -46,7 +46,7 @@ public class HppcIntObjectMapTest implements ITestSet
     private static class HppcIntObjectPutTest extends AbstractPrimObjectPutTest {
         @Override
         public int test() {
-            final IntObjectOpenHashMap<Integer> m_map = new IntObjectOpenHashMap<>( m_keys.length, 0.5f );
+            final IntObjectHashMap<Integer> m_map = new IntObjectHashMap<>( m_keys.length, 0.5f );
             for ( int i = 0; i < m_keys.length; ++i )
                 m_map.put( m_keys[ i ], null );
             for ( int i = 0; i < m_keys.length; ++i )
@@ -58,7 +58,7 @@ public class HppcIntObjectMapTest implements ITestSet
     private static class HppcIntObjectRemoveTest extends AbstractPrimObjectPutTest {
         @Override
         public int test() {
-            final IntObjectOpenHashMap<Integer> m_map = new IntObjectOpenHashMap<>( m_keys.length / 2 + 1, 0.5f );
+            final IntObjectHashMap<Integer> m_map = new IntObjectHashMap<>( m_keys.length / 2 + 1, 0.5f );
             final Integer value = 1;
             int add = 0, remove = 0;
             while ( add < m_keys.length )

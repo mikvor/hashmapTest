@@ -1,6 +1,6 @@
 package tests.maptests.primitive;
 
-import com.carrotsearch.hppc.IntIntOpenHashMap;
+import com.carrotsearch.hppc.IntIntHashMap;
 import tests.maptests.IMapTest;
 import tests.maptests.ITestSet;
 
@@ -25,12 +25,12 @@ public class HppcMapTest implements ITestSet
     }
 
     private static class HppcGetTest extends AbstractPrimPrimGetTest {
-        private IntIntOpenHashMap m_map;
+        private IntIntHashMap m_map;
 
         @Override
         public void setup(final int[] keys, final float fillFactor, int oneFailOutOf ) {
             super.setup( keys, fillFactor, oneFailOutOf );
-            m_map = new IntIntOpenHashMap( keys.length, fillFactor );
+            m_map = new IntIntHashMap( keys.length, fillFactor );
             for (int key : keys) m_map.put( key + (key % oneFailOutOf == 0 ? 1 : 0), key );
         }
 
@@ -46,7 +46,7 @@ public class HppcMapTest implements ITestSet
     private static class HppcPutTest extends AbstractPrimPrimPutTest {
         @Override
         public int test() {
-            final IntIntOpenHashMap m_map = new IntIntOpenHashMap( m_keys.length, m_fillFactor );
+            final IntIntHashMap m_map = new IntIntHashMap( m_keys.length, m_fillFactor );
             for ( int i = 0; i < m_keys.length; ++i )
                m_map.put( m_keys[ i ],m_keys[ i ] );
             for ( int i = 0; i < m_keys.length; ++i )
@@ -58,7 +58,7 @@ public class HppcMapTest implements ITestSet
     private static class HppcRemoveTest extends AbstractPrimPrimPutTest {
         @Override
         public int test() {
-            final IntIntOpenHashMap m_map = new IntIntOpenHashMap( m_keys.length / 2 + 1, m_fillFactor );
+            final IntIntHashMap m_map = new IntIntHashMap( m_keys.length / 2 + 1, m_fillFactor );
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {

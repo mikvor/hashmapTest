@@ -1,11 +1,11 @@
 package tests.maptests.object_prim;
 
-import com.carrotsearch.hppc.ObjectIntOpenHashMap;
+import com.carrotsearch.hppc.ObjectIntHashMap;
 import tests.maptests.IMapTest;
 import tests.maptests.ITestSet;
 
 /**
- * HPPC ObjectIntOpenHashMap
+ * HPPC ObjectIntHashMap
  */
 public class HppcObjectIntMapTest implements ITestSet
 {
@@ -25,12 +25,12 @@ public class HppcObjectIntMapTest implements ITestSet
     }
 
     private static class HppcObjectIntGetTest extends AbstractObjKeyGetTest {
-        private ObjectIntOpenHashMap<Integer> m_map;
+        private ObjectIntHashMap<Integer> m_map;
 
         @Override
         public void setup(int[] keys, float fillFactor, final int oneFailureOutOf ) {
             super.setup(keys, fillFactor, oneFailureOutOf);
-            m_map = new ObjectIntOpenHashMap<>( keys.length, fillFactor );
+            m_map = new ObjectIntHashMap<>( keys.length, fillFactor );
             for ( Integer key : keys ) m_map.put( new Integer( key % oneFailureOutOf == 0 ? key+1 : key), key );
         }
 
@@ -46,7 +46,7 @@ public class HppcObjectIntMapTest implements ITestSet
     private static class HppcObjectIntPutTest extends AbstractObjKeyPutTest {
         @Override
         public int test() {
-            final ObjectIntOpenHashMap<Integer> m_map = new ObjectIntOpenHashMap<>( m_keys.length, m_fillFactor );
+            final ObjectIntHashMap<Integer> m_map = new ObjectIntHashMap<>( m_keys.length, m_fillFactor );
             for ( int i = 0; i < m_keys.length; ++i )
                 m_map.put( m_keys[ i ], i );
             for ( int i = 0; i < m_keys2.length; ++i )
@@ -58,7 +58,7 @@ public class HppcObjectIntMapTest implements ITestSet
     private static class HppcObjectIntRemoveTest extends AbstractObjKeyPutTest {
         @Override
         public int test() {
-            final ObjectIntOpenHashMap<Integer> m_map = new ObjectIntOpenHashMap<>( m_keys.length / 2 + 1, m_fillFactor );
+            final ObjectIntHashMap<Integer> m_map = new ObjectIntHashMap<>( m_keys.length / 2 + 1, m_fillFactor );
             int add = 0, remove = 0;
             while ( add < m_keys.length )
             {
