@@ -31,7 +31,7 @@ public class FastUtilObjectIntMapTest implements ITestSet
         public void setup(int[] keys, float fillFactor, final int oneFailureOutOf ) {
             super.setup(keys, fillFactor, oneFailureOutOf);
             m_map = new Object2IntOpenHashMap<>( keys.length, fillFactor );
-            for ( Integer key : keys ) m_map.put( new Integer( key % oneFailureOutOf == 0 ? key + 1 : key), key );
+            for ( Integer key : keys ) m_map.put( new Integer( key % oneFailureOutOf == 0 ? key + 1 : key), key.intValue() );
         }
 
         @Override
@@ -66,7 +66,7 @@ public class FastUtilObjectIntMapTest implements ITestSet
                 ++add;
                 m_map.put( m_keys[ add ], add );
                 ++add;
-                m_map.remove( m_keys[ remove++ ] );
+                m_map.removeInt( m_keys[ remove++ ] );
             }
             return m_map.size();
         }
