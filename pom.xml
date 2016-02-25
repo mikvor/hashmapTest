@@ -55,7 +55,7 @@ questions.
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
-            <version>7.0.7</version>
+            <version>7.0.10</version>
         </dependency>
 
         <!-- Trove -->
@@ -82,12 +82,12 @@ questions.
         <dependency>
         	<groupId>com.goldmansachs</groupId>
         	<artifactId>gs-collections-api</artifactId>
-        	<version>6.2.0</version>
+        	<version>7.0.1</version>
         </dependency>
         <dependency>
         	<groupId>com.goldmansachs</groupId>
         	<artifactId>gs-collections</artifactId>
-        	<version>6.2.0</version>
+        	<version>7.0.1</version>
         </dependency>
 
         <!-- HPPC -->
@@ -110,7 +110,7 @@ questions.
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jmh.version>1.11.1</jmh.version>
+        <jmh.version>1.11.3</jmh.version>
         <javac.target>1.8</javac.target>
         <uberjar.name>benchmarks</uberjar.name>
     </properties>

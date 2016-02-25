@@ -74,7 +74,7 @@ public class KolobokeObjectIntMapTest implements ITestSet
                 ++add;
                 m_map.put( m_keys[ add ], add );
                 ++add;
-                m_map.remove( m_keys[ remove++ ] );
+                m_map.removeAsInt( m_keys[ remove++ ] );
             }
             return m_map.size();
         }
