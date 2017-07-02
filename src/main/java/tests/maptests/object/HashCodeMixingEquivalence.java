@@ -1,6 +1,7 @@
 package tests.maptests.object;
 
-import net.openhft.koloboke.collect.StatelessEquivalence;
+
+import com.koloboke.collect.StatelessEquivalence;
 
 public final class HashCodeMixingEquivalence extends StatelessEquivalence {
     public static final HashCodeMixingEquivalence INSTANCE = new HashCodeMixingEquivalence();

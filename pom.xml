@@ -67,27 +67,28 @@ questions.
 
         <!-- Koloboke -->
         <dependency>
-            <groupId>net.openhft</groupId>
+            <groupId>com.koloboke</groupId>
             <artifactId>koloboke-api-jdk8</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>net.openhft</groupId>
+            <groupId>com.koloboke</groupId>
             <artifactId>koloboke-impl-jdk8</artifactId>
             <version>1.0.0</version>
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Goldman Sachs collections -->
+        <!-- Goldman Sachs, now Eclipse, collections -->
         <dependency>
-        	<groupId>com.goldmansachs</groupId>
-        	<artifactId>gs-collections-api</artifactId>
-        	<version>7.0.3</version>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections-api</artifactId>
+            <version>8.1.0</version>
         </dependency>
+
         <dependency>
-        	<groupId>com.goldmansachs</groupId>
-        	<artifactId>gs-collections</artifactId>
-        	<version>7.0.3</version>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections</artifactId>
+            <version>8.1.0</version>
         </dependency>
 
         <!-- HPPC -->

@@ -1,7 +1,8 @@
 package tests.maptests.object;
 
-import net.openhft.koloboke.collect.hash.HashConfig;
-import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
+
+import com.koloboke.collect.hash.HashConfig;
+import com.koloboke.collect.map.hash.HashObjObjMaps;
 
 import java.util.Map;
 

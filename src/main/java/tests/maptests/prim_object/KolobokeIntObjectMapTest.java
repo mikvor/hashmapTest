@@ -1,8 +1,8 @@
 package tests.maptests.prim_object;
 
-import net.openhft.koloboke.collect.hash.HashConfig;
-import net.openhft.koloboke.collect.map.hash.HashIntObjMap;
-import net.openhft.koloboke.collect.map.hash.HashIntObjMaps;
+import com.koloboke.collect.hash.HashConfig;
+import com.koloboke.collect.map.hash.HashIntObjMap;
+import com.koloboke.collect.map.hash.HashIntObjMaps;
 import tests.maptests.IMapTest;
 import tests.maptests.ITestSet;
 import tests.maptests.primitive.AbstractPrimPrimGetTest;
@@ -28,7 +28,7 @@ public class KolobokeIntObjectMapTest implements ITestSet
         return new KolobokeIntObjectRemoveTest();
     }
 
-    private static <T> HashIntObjMap<T> makeMap( final int size, final float fillFactor )
+    private static <T> HashIntObjMap<T> makeMap(final int size, final float fillFactor )
     {
         return HashIntObjMaps.getDefaultFactory().withHashConfig(HashConfig.fromLoads( fillFactor/2, fillFactor, fillFactor)).newMutableMap( size );
     }

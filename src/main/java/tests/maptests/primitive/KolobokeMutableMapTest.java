@@ -1,8 +1,8 @@
 package tests.maptests.primitive;
 
-import net.openhft.koloboke.collect.hash.HashConfig;
-import net.openhft.koloboke.collect.map.hash.HashIntIntMap;
-import net.openhft.koloboke.collect.map.hash.HashIntIntMaps;
+import com.koloboke.collect.hash.HashConfig;
+import com.koloboke.collect.map.hash.HashIntIntMap;
+import com.koloboke.collect.map.hash.HashIntIntMaps;
 import tests.maptests.IMapTest;
 import tests.maptests.ITestSet;
 
@@ -26,7 +26,7 @@ public class KolobokeMutableMapTest implements ITestSet
         return new KolobokeMutableRemoveTest();
     }
 
-    private static HashIntIntMap makeMap( final int size, final float fillFactor )
+    private static HashIntIntMap makeMap(final int size, final float fillFactor )
     {
         return HashIntIntMaps.getDefaultFactory().
                             withHashConfig(HashConfig.fromLoads(fillFactor/2, fillFactor, fillFactor)).newMutableMap(size);

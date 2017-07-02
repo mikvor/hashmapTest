@@ -1,6 +1,6 @@
 package tests.maptests.object;
 
-import com.gs.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import tests.maptests.IMapTest;
 import tests.maptests.ITestSet;
 import tests.maptests.object_prim.AbstractObjKeyGetTest;
