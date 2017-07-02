@@ -1,6 +1,6 @@
 package tests.maptests.object_prim;
 
-import com.gs.collections.impl.map.mutable.primitive.ObjectIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import tests.maptests.IMapTest;
 import tests.maptests.ITestSet;
 

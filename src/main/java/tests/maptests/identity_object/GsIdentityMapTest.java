@@ -1,7 +1,7 @@
 package tests.maptests.identity_object;
 
-import com.gs.collections.api.block.HashingStrategy;
-import com.gs.collections.impl.map.strategy.mutable.UnifiedMapWithHashingStrategy;
+import org.eclipse.collections.api.block.HashingStrategy;
+import org.eclipse.collections.impl.map.strategy.mutable.UnifiedMapWithHashingStrategy;
 import tests.maptests.IMapTest;
 import tests.maptests.ITestSet;
 import tests.maptests.object_prim.AbstractObjKeyGetTest;

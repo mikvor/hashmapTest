@@ -1,7 +1,7 @@
 package tests.maptests.object;
 
-import net.openhft.koloboke.collect.hash.HashConfig;
-import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
+import com.koloboke.collect.hash.HashConfig;
+import com.koloboke.collect.map.hash.HashObjObjMaps;
 import tests.maptests.IMapTest;
 import tests.maptests.ITestSet;
 import tests.maptests.object_prim.AbstractObjKeyGetTest;

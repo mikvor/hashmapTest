@@ -1,7 +1,7 @@
 package tests.maptests.primitive;
 
-import com.gs.collections.api.map.primitive.IntIntMap;
-import com.gs.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.api.map.primitive.IntIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import tests.maptests.IMapTest;
 import tests.maptests.ITestSet;
 
