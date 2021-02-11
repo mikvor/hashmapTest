@@ -49,7 +49,7 @@ public class MapTestRunner {
     //increase this value significantly (Integer.MAX_VALUE is a good candidate) to revert to the original "always successful get" tests
     private static final int ONE_FAIL_OUT_OF = 2;
 
-    private static final Class[] TESTS_ARTICLE = {
+    private static final Class<?>[] TESTS_ARTICLE = {
             IntIntMap1Test.class,
             IntIntMap2Test.class,
             IntIntMap3Test.class,
@@ -57,14 +57,15 @@ public class MapTestRunner {
             IntIntMap4aTest.class,
     };
 
-    private static final Class[] TESTS_PRIMITIVE = {
+    private static final Class<?>[] TESTS_PRIMITIVE = {
             FastUtilMapTest.class,
             GsMutableMapTest.class,
             KolobokeMutableMapTest.class, //+
             HppcMapTest.class,
             TroveMapTest.class, //+
+            AgronaMapTest.class,
     };
-    private static final Class[] TESTS_WRAPPER = {
+    private static final Class<?>[] TESTS_WRAPPER = {
             FastUtilObjMapTest.class,
             KolobokeMutableObjTest.class, //+
             KolobokeNotNullKeyObjTest.class,
@@ -74,24 +75,27 @@ public class MapTestRunner {
             JdkMapTest.class,  //+
             JdkMapTestDifferentCapacity.class,  //+
             TroveObjMapTest.class,   //+
-            ObjObjMapTest.class   //
+            ObjObjMapTest.class,   //
+            AgronaObjMapTest.class,
     };
-    private static final Class[] TESTS_PRIMITIVE_WRAPPER = {
+    private static final Class<?>[] TESTS_PRIMITIVE_WRAPPER = {
             FastUtilIntObjectMapTest.class,
             GsIntObjectMapTest.class,
             KolobokeIntObjectMapTest.class,   //+
             HppcIntObjectMapTest.class,
             TroveIntObjectMapTest.class,   //+
+            AgronaIntObjectMapTest.class,
     };
-    private static final Class[] TESTS_WRAPPER_PRIMITIVE = {
+    private static final Class<?>[] TESTS_WRAPPER_PRIMITIVE = {
             FastUtilObjectIntMapTest.class,
             GsObjectIntMapTest.class,
             KolobokeObjectIntMapTest.class,   //+
             HppcObjectIntMapTest.class,
             TroveObjectIntMapTest.class,   //+
+            AgronaObjectIntMapTest.class,
     };
 
-    private static final Class[] TESTS_IDENTITY = {
+    private static final Class<?>[] TESTS_IDENTITY = {
             FastUtilRef2ObjectMapTest.class,
             GsIdentityMapTest.class,
             KolobokeIdentityMapTest.class,
@@ -117,7 +121,7 @@ public class MapTestRunner {
 
     private static String runTestSet(final String testSetName) throws RunnerException, InstantiationException, IllegalAccessException
     {
-        final List<Class> tests = new ArrayList<>();
+        final List<Class<?>> tests = new ArrayList<>();
         tests.addAll( Arrays.asList( TESTS_ARTICLE ) );
         tests.addAll( Arrays.asList( TESTS_PRIMITIVE ) );
         tests.addAll( Arrays.asList( TESTS_WRAPPER ) );
@@ -137,7 +141,7 @@ public class MapTestRunner {
         //pick map size first - we need to generate a set of keys to be used in all tests
         for (final int mapSize : MAP_SIZES) {
             //run tests one after another
-            for ( final Class testClass : tests ) {
+            for ( final Class<?> testClass : tests ) {
                 Options opt = new OptionsBuilder()
                         .include(".*" + MapTestRunner.class.getSimpleName() + ".*")
                         .forks(1)
@@ -151,21 +155,18 @@ public class MapTestRunner {
                         .param("m_className", testClass.getCanonicalName())
                         .param("m_testType", testSetName)
                         //.verbosity(VerboseMode.SILENT)
+                        .shouldFailOnError(true)
                         .build();
 
                 Collection<RunResult> res = new Runner(opt).run();
                 for ( RunResult rr : res )
                 {
                     System.out.println( testClass.getCanonicalName() + " (" + mapSize + ") = " + rr.getAggregatedResult().getPrimaryResult().getScore() );
-                    Map<Integer, String> forClass = results.get( testClass.getCanonicalName() );
-                    if ( forClass == null )
-                        results.put( testClass.getCanonicalName(), forClass = new HashMap<>( 4 ) );
+                    Map<Integer, String> forClass = results.computeIfAbsent(testClass.getCanonicalName(), k -> new HashMap<>(4));
                     forClass.put(mapSize, Integer.toString((int) rr.getAggregatedResult().getPrimaryResult().getScore()) );
                 }
                 if ( res.isEmpty() ) {
-                    Map<Integer, String> forClass = results.get( testClass.getCanonicalName() );
-                    if ( forClass == null )
-                        results.put( testClass.getCanonicalName(), forClass = new HashMap<>( 4 ) );
+                    Map<Integer, String> forClass = results.computeIfAbsent(testClass.getCanonicalName(), k -> new HashMap<>(4));
                     forClass.put(mapSize, "-1");
                 }
             }
@@ -176,9 +177,9 @@ public class MapTestRunner {
         return res;
     }
 
-    private static void testBillion( final List<Class> tests ) throws IllegalAccessException, InstantiationException {
+    private static void testBillion( final List<Class<?>> tests ) throws IllegalAccessException, InstantiationException {
         final int mapSize = 1000 * 1000 * 1000;
-        for ( final Class klass : tests )
+        for ( final Class<?> klass : tests )
         {
             System.gc();
             final IMapTest obj = (IMapTest) klass.newInstance();
@@ -192,7 +193,7 @@ public class MapTestRunner {
         }
     }
 
-    private static String formatResults( final Map<String, Map<Integer, String>> results, final int[] mapSizes, final List<Class> tests )
+    private static String formatResults( final Map<String, Map<Integer, String>> results, final int[] mapSizes, final List<Class<?>> tests )
     {
         final StringBuilder sb = new StringBuilder( 2048 );
         //format results
@@ -201,7 +202,7 @@ public class MapTestRunner {
             sb.append( "," ).append( size );
         sb.append( "\n" );
         //following lines - tests in the definition order
-        for ( final Class test : tests )
+        for ( final Class<?> test : tests )
         {
             final Map<Integer, String> res = results.get( test.getCanonicalName() );
             sb.append( test.getName() );

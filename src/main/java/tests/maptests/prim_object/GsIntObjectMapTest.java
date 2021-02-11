@@ -47,11 +47,12 @@ public class GsIntObjectMapTest implements ITestSet
     private static class GsIntObjectPutTest extends AbstractPrimObjectPutTest {
         @Override
         public int test() {
+            final Integer value = 1;
             final IntObjectHashMap<Integer> m_map = new IntObjectHashMap<>( m_keys.length );
             for ( int i = 0; i < m_keys.length; ++i )
-                m_map.put( m_keys[ i ], null );
+                m_map.put( m_keys[ i ], value );
             for ( int i = 0; i < m_keys.length; ++i )
-                m_map.put( m_keys[ i ], null );
+                m_map.put( m_keys[ i ], value );
             return m_map.size();
         }
     }

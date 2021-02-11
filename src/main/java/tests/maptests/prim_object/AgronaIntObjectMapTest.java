@@ -1,37 +1,37 @@
 package tests.maptests.prim_object;
 
-import gnu.trove.map.TIntObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
+import org.agrona.collections.Int2ObjectHashMap;
 import tests.maptests.IMapTest;
 import tests.maptests.ITestSet;
 
 /**
- * Trove TIntObjectHashMap
+ * Agrona Int2ObjectHashMap test
  */
-public class TroveIntObjectMapTest implements ITestSet
+public class AgronaIntObjectMapTest implements ITestSet
 {
     @Override
     public IMapTest getTest() {
-        return new TroveIntObjectGetTest();
+        return new AgronaIntObjectGetTest();
     }
 
     @Override
     public IMapTest putTest() {
-        return new TroveIntObjectPutTest();
+        return new AgronaIntObjectPutTest();
     }
 
     @Override
     public IMapTest removeTest() {
-        return new TroveIntObjectRemoveTest();
+        return new AgronaIntObjectRemoveTest();
     }
 
-    private static class TroveIntObjectGetTest extends AbstractPrimObjectGetTest {
-        private TIntObjectMap<Integer> m_map;
+    private static class AgronaIntObjectGetTest extends AbstractPrimObjectGetTest {
+        private Int2ObjectHashMap<Integer> m_map;
+
         @Override
         public void setup(int[] keys, float fillFactor, int oneFailOutOf) {
             super.setup(keys, fillFactor, oneFailOutOf);
-            m_map = new TIntObjectHashMap<>( keys.length, fillFactor );
-            for ( final int key : keys ) m_map.put( key % oneFailOutOf == 0 ? key + 1 : key, key );
+            m_map = new Int2ObjectHashMap<>( keys.length, 0.5f );
+            for ( int key : keys ) m_map.put( key % oneFailOutOf == 0 ? key + 1 : key, Integer.valueOf(key) );
         }
 
         @Override
@@ -43,11 +43,11 @@ public class TroveIntObjectMapTest implements ITestSet
         }
     }
 
-    private static class TroveIntObjectPutTest extends AbstractPrimObjectPutTest {
+    private static class AgronaIntObjectPutTest extends AbstractPrimObjectPutTest {
         @Override
         public int test() {
             final Integer value = 1;
-            final TIntObjectMap<Integer> m_map = new TIntObjectHashMap<>( m_keys.length, m_fillFactor );
+            final Int2ObjectHashMap<Integer> m_map = new Int2ObjectHashMap<>( m_keys.length, 0.5f );
             for ( int i = 0; i < m_keys.length; ++i )
                 m_map.put( m_keys[ i ], value );
             for ( int i = 0; i < m_keys.length; ++i )
@@ -56,10 +56,10 @@ public class TroveIntObjectMapTest implements ITestSet
         }
     }
 
-    private static class TroveIntObjectRemoveTest extends AbstractPrimObjectPutTest {
+    private static class AgronaIntObjectRemoveTest extends AbstractPrimObjectPutTest {
         @Override
         public int test() {
-            final TIntObjectMap<Integer> m_map = new TIntObjectHashMap<>( m_keys.length / 2 + 1, m_fillFactor );
+            final Int2ObjectHashMap<Integer> m_map = new Int2ObjectHashMap<>( m_keys.length / 2 + 1, 0.5f );
             final Integer value = 1;
             int add = 0, remove = 0;
             while ( add < m_keys.length )
@@ -73,5 +73,7 @@ public class TroveIntObjectMapTest implements ITestSet
             return m_map.size();
         }
     }
+
 }
+
 
