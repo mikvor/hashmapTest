@@ -55,11 +55,12 @@ public class KolobokeIntObjectMapTest implements ITestSet
     private static class KolobokeIntObjectPutTest extends AbstractPrimPrimPutTest {
         @Override
         public int test() {
+            final Integer value = 1;
             final HashIntObjMap<Integer> m_map = makeMap( m_keys.length, m_fillFactor );
             for ( int i = 0; i < m_keys.length; ++i )
-                m_map.put( m_keys[ i ], null );
+                m_map.put( m_keys[ i ], value );
             for ( int i = 0; i < m_keys.length; ++i )
-                m_map.put( m_keys[ i ], null );
+                m_map.put( m_keys[ i ], value );
             return m_map.size();
         }
     }
